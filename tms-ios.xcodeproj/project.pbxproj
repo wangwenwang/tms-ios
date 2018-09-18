@@ -19,7 +19,7 @@
 		3BEDDBA7214B9C0600E4DA6C /* NSDictionary+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BEDDBA1214B932700E4DA6C /* NSDictionary+Extension.m */; };
 		3BEDDBA8214B9C0600E4DA6C /* NSDictionary+toString.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BEDDBA3214B932700E4DA6C /* NSDictionary+toString.m */; };
 		3BEDDBA9214B9C0600E4DA6C /* NSString+toDict.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BEDDBA5214B932700E4DA6C /* NSString+toDict.m */; };
-		3BEDDBC3214BB98000E4DA6C /* dist.zip in Resources */ = {isa = PBXBuildFile; fileRef = 3BEDDBC2214BB97C00E4DA6C /* dist.zip */; };
+		3BEDDBD0215099B100E4DA6C /* dist.zip in Resources */ = {isa = PBXBuildFile; fileRef = 3BEDDBCF215099A300E4DA6C /* dist.zip */; };
 		8DBD0BBED859D7D860CB3D51 /* libPods-tms-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 49235199E2EB66A2027C9D45 /* libPods-tms-ios.a */; };
 /* End PBXBuildFile section */
 
@@ -67,7 +67,7 @@
 		3BEDDBA3214B932700E4DA6C /* NSDictionary+toString.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+toString.m"; sourceTree = "<group>"; };
 		3BEDDBA4214B932700E4DA6C /* NSString+toDict.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+toDict.h"; sourceTree = "<group>"; };
 		3BEDDBA5214B932700E4DA6C /* NSString+toDict.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+toDict.m"; sourceTree = "<group>"; };
-		3BEDDBC2214BB97C00E4DA6C /* dist.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = dist.zip; sourceTree = "<group>"; };
+		3BEDDBCF215099A300E4DA6C /* dist.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = dist.zip; sourceTree = "<group>"; };
 		49235199E2EB66A2027C9D45 /* libPods-tms-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-tms-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5D8ED19CD77EB44EE047EE25 /* Pods-tms-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-tms-ios.release.xcconfig"; path = "Pods/Target Support Files/Pods-tms-ios/Pods-tms-ios.release.xcconfig"; sourceTree = "<group>"; };
 		91B1EC4499254E3C2669B194 /* Pods-tms-ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-tms-ios.debug.xcconfig"; path = "Pods/Target Support Files/Pods-tms-ios/Pods-tms-ios.debug.xcconfig"; sourceTree = "<group>"; };
@@ -132,7 +132,7 @@
 		3BD7CA472145F54000DFF16F /* tms-ios */ = {
 			isa = PBXGroup;
 			children = (
-				3BEDDBC2214BB97C00E4DA6C /* dist.zip */,
+				3BEDDBCF215099A300E4DA6C /* dist.zip */,
 				3BD7CA7A2145F66000DFF16F /* Default-568@2x.png */,
 				3BEDDB9D214B932700E4DA6C /* Category */,
 				3BD7CA482145F54000DFF16F /* AppDelegate.h */,
@@ -298,7 +298,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3BEDDBC3214BB98000E4DA6C /* dist.zip in Resources */,
+				3BEDDBD0215099B100E4DA6C /* dist.zip in Resources */,
 				3BD7CA552145F54000DFF16F /* LaunchScreen.storyboard in Resources */,
 				3BD7CA522145F54000DFF16F /* Assets.xcassets in Resources */,
 				3BD7CA502145F54000DFF16F /* Main.storyboard in Resources */,
@@ -525,7 +525,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				NEW_SETTING = "";
-				PRODUCT_BUNDLE_IDENTIFIER = com.kaidongyuan.wms;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kaidongyuan.tms;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = 1;
 			};
@@ -544,7 +544,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				NEW_SETTING = "";
-				PRODUCT_BUNDLE_IDENTIFIER = com.kaidongyuan.wms;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kaidongyuan.tms;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = 1;
 			};

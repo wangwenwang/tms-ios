@@ -45,7 +45,7 @@
     if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"weixin://"]] || [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"Whatapp://"]] || [WXApi isWXAppInstalled]) {
         
         //微信
-        NSLog(@"YESWX");
+        NSLog(@"YES");
     }else {
         
         // 移除微信按钮
