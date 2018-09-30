@@ -12,10 +12,19 @@
 #import "NSString+toDict.h"
 #import "NSDictionary+toString.h"
 #import "ViewController.h"
+#import "ServiceTools.h"
+#import "Tools.h"
+#import "LMProgressView.h"
+#import <ZipArchive.h>
+#import "AppDelegate.h"
 
-@interface AppDelegate ()<WXApiDelegate>
+@interface AppDelegate ()<WXApiDelegate, ServiceToolsDelegate>
 
 @property (weak, nonatomic) UIWebView *webView;
+
+@property (nonatomic, strong)LMProgressView *progressView;
+
+@property (nonatomic, strong)UIView *downView;
 
 @end
 
@@ -25,11 +34,35 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     
+    long long uuu = (1538289790000 - 1537718400000) / 1000 / 60 / 60 / 24;
     
+    
+    // 注册微信凭证
     [WXApi registerApp:@"wx4c368e3f56d8ace2"];
+    
+    // 接收webview
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveWebView:) name:kReceive_WebView_Notification object:nil];
     
+    // 检查HTML zip 是否有更新
+    [self checkZipVersion];
+    
     return YES;
+}
+
+
+- (void)checkZipVersion {
+    
+    NSString *currVersion = [Tools getZipVersion];
+    if(currVersion == nil) {
+        NSLog(@"初次检查zip版本，设置默认");
+        [Tools setZipVersion:kUserDefaults_ZipVersion_local_defaultValue];
+    }else{
+        NSLog(@"本地zip版本：%@", currVersion);
+    }
+    
+    ServiceTools *s = [[ServiceTools alloc] init];
+    s.delegate = self;
+    [s queryAppVersion];
 }
 
 
@@ -119,10 +152,11 @@
 
 // 获取tms用户信息
 - (void)bindingWX:(NSString *)openid {
-    
+    ;
     NSString *params = [NSString stringWithFormat:@"{\"wxOpenid\":\"%@\"}", openid];
     NSString *paramsEncoding = [params stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    NSString *url = [NSString stringWithFormat:@"http://zwlttest.3322.org:8081/tmsApp/login.do?params=%@", paramsEncoding];
+    AppDelegate *app = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    NSString *url = [NSString stringWithFormat:@"%@login.do?params=%@", [Tools getServerAddress], paramsEncoding];
     NSLog(@"请求tms用户信息参数：%@",url);
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     manager.responseSerializer = [AFHTTPResponseSerializer serializer];
@@ -150,7 +184,7 @@
                 NSString *jsStr = [NSString stringWithFormat:@"WXBind_NO_Ajax('%@')",openid];
                 NSLog(@"%@",jsStr);
                 [_webView stringByEvaluatingJavaScriptFromString:jsStr];
-                NSLog(@"些微信未注册");
+                NSLog(@"此微信未注册");
             }
         }else {
             
@@ -183,6 +217,66 @@
         
         NSLog(@"请求个人信息失败");
     }];
+}
+
+
+#pragma mark - ServiceToolsDelegate
+
+- (void)successOfQueryAppVersion:(NSString *)zipVersionNo andZipDownloadUrl:(NSString *)zipDownloadUrl {
+    
+//    NSString *version = [Tools getZipVersion];
+}
+
+// 开始下载zip
+- (void)downloadStart {
+    
+    if(!_downView) {
+        _downView = [[UIView alloc] init];
+    }
+    [_downView setFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];
+    [_downView setBackgroundColor:RGB(145, 201, 249)];
+    [_window addSubview:_downView];
+    
+    _progressView = [[LMProgressView alloc]initWithFrame:CGRectMake(0, 0, CGRectGetWidth(_window.frame), CGRectGetHeight(_window.frame))];
+    [_downView addSubview:_progressView];
+}
+
+// 下载zip进度
+- (void)downloadProgress:(double)progress {
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        _progressView.progress = progress;
+    });
+}
+
+// 下载zip完成
+- (void)downloadCompletion:(NSString *)version andFilePath:(NSString *)filePath {
+    
+    NSLog(@"解压中...");
+    NSString *unzipPath = [Tools getUnzipPath];
+    [SSZipArchive unzipFileAtPath:filePath toDestination:unzipPath];
+    NSLog(@"解压完成，开始刷新APP内容...");
+    
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        
+        usleep(500000);
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            [_webView reload];
+            
+            [UIView animateWithDuration:0.2 animations:^{
+                
+                _downView.alpha = 0.0f;
+            }completion:^(BOOL finished){
+                
+                [_downView removeFromSuperview];
+            }];
+            [Tools setZipVersion:version];
+            NSLog(@"刷新内容完成");
+        });
+    });
 }
 
 @end

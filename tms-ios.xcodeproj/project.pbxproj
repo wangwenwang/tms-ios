@@ -19,7 +19,9 @@
 		3BEDDBA7214B9C0600E4DA6C /* NSDictionary+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BEDDBA1214B932700E4DA6C /* NSDictionary+Extension.m */; };
 		3BEDDBA8214B9C0600E4DA6C /* NSDictionary+toString.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BEDDBA3214B932700E4DA6C /* NSDictionary+toString.m */; };
 		3BEDDBA9214B9C0600E4DA6C /* NSString+toDict.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BEDDBA5214B932700E4DA6C /* NSString+toDict.m */; };
-		3BEDDBD0215099B100E4DA6C /* dist.zip in Resources */ = {isa = PBXBuildFile; fileRef = 3BEDDBCF215099A300E4DA6C /* dist.zip */; };
+		3BF25293215DD06100DA76B9 /* Tools.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BF25292215DD06100DA76B9 /* Tools.m */; };
+		3BF2529F215E07E000DA76B9 /* LMProgressView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BF2529E215E06FD00DA76B9 /* LMProgressView.m */; };
+		3BF252A0215E07E300DA76B9 /* ServiceTools.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BF2529B215E06F200DA76B9 /* ServiceTools.m */; };
 		8DBD0BBED859D7D860CB3D51 /* libPods-tms-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 49235199E2EB66A2027C9D45 /* libPods-tms-ios.a */; };
 /* End PBXBuildFile section */
 
@@ -41,6 +43,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3B7E5E902160E80500D4C33A /* dist.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = dist.zip; sourceTree = "<group>"; };
 		3BD7CA452145F54000DFF16F /* tms-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "tms-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3BD7CA482145F54000DFF16F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		3BD7CA492145F54000DFF16F /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -67,7 +70,12 @@
 		3BEDDBA3214B932700E4DA6C /* NSDictionary+toString.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+toString.m"; sourceTree = "<group>"; };
 		3BEDDBA4214B932700E4DA6C /* NSString+toDict.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+toDict.h"; sourceTree = "<group>"; };
 		3BEDDBA5214B932700E4DA6C /* NSString+toDict.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+toDict.m"; sourceTree = "<group>"; };
-		3BEDDBCF215099A300E4DA6C /* dist.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = dist.zip; sourceTree = "<group>"; };
+		3BF25291215DD06100DA76B9 /* Tools.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Tools.h; sourceTree = "<group>"; };
+		3BF25292215DD06100DA76B9 /* Tools.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Tools.m; sourceTree = "<group>"; };
+		3BF2529A215E06F200DA76B9 /* ServiceTools.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ServiceTools.h; sourceTree = "<group>"; };
+		3BF2529B215E06F200DA76B9 /* ServiceTools.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ServiceTools.m; sourceTree = "<group>"; };
+		3BF2529D215E06FD00DA76B9 /* LMProgressView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LMProgressView.h; sourceTree = "<group>"; };
+		3BF2529E215E06FD00DA76B9 /* LMProgressView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LMProgressView.m; sourceTree = "<group>"; };
 		49235199E2EB66A2027C9D45 /* libPods-tms-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-tms-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5D8ED19CD77EB44EE047EE25 /* Pods-tms-ios.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-tms-ios.release.xcconfig"; path = "Pods/Target Support Files/Pods-tms-ios/Pods-tms-ios.release.xcconfig"; sourceTree = "<group>"; };
 		91B1EC4499254E3C2669B194 /* Pods-tms-ios.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-tms-ios.debug.xcconfig"; path = "Pods/Target Support Files/Pods-tms-ios/Pods-tms-ios.debug.xcconfig"; sourceTree = "<group>"; };
@@ -132,13 +140,17 @@
 		3BD7CA472145F54000DFF16F /* tms-ios */ = {
 			isa = PBXGroup;
 			children = (
-				3BEDDBCF215099A300E4DA6C /* dist.zip */,
+				3B7E5E902160E80500D4C33A /* dist.zip */,
 				3BD7CA7A2145F66000DFF16F /* Default-568@2x.png */,
+				3BF2529C215E06FD00DA76B9 /* Third */,
+				3BF25299215E06F200DA76B9 /* Service */,
 				3BEDDB9D214B932700E4DA6C /* Category */,
 				3BD7CA482145F54000DFF16F /* AppDelegate.h */,
 				3BD7CA492145F54000DFF16F /* AppDelegate.m */,
 				3BD7CA4B2145F54000DFF16F /* ViewController.h */,
 				3BD7CA4C2145F54000DFF16F /* ViewController.m */,
+				3BF25291215DD06100DA76B9 /* Tools.h */,
+				3BF25292215DD06100DA76B9 /* Tools.m */,
 				3BD7CA4E2145F54000DFF16F /* Main.storyboard */,
 				3BD7CA512145F54000DFF16F /* Assets.xcassets */,
 				3BD7CA532145F54000DFF16F /* LaunchScreen.storyboard */,
@@ -180,6 +192,24 @@
 				3BEDDBA5214B932700E4DA6C /* NSString+toDict.m */,
 			);
 			path = Category;
+			sourceTree = "<group>";
+		};
+		3BF25299215E06F200DA76B9 /* Service */ = {
+			isa = PBXGroup;
+			children = (
+				3BF2529A215E06F200DA76B9 /* ServiceTools.h */,
+				3BF2529B215E06F200DA76B9 /* ServiceTools.m */,
+			);
+			path = Service;
+			sourceTree = "<group>";
+		};
+		3BF2529C215E06FD00DA76B9 /* Third */ = {
+			isa = PBXGroup;
+			children = (
+				3BF2529D215E06FD00DA76B9 /* LMProgressView.h */,
+				3BF2529E215E06FD00DA76B9 /* LMProgressView.m */,
+			);
+			path = Third;
 			sourceTree = "<group>";
 		};
 		B271B2CA9815FFCD1FE16B28 /* Pods */ = {
@@ -298,7 +328,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3BEDDBD0215099B100E4DA6C /* dist.zip in Resources */,
 				3BD7CA552145F54000DFF16F /* LaunchScreen.storyboard in Resources */,
 				3BD7CA522145F54000DFF16F /* Assets.xcassets in Resources */,
 				3BD7CA502145F54000DFF16F /* Main.storyboard in Resources */,
@@ -347,9 +376,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3BF252A0215E07E300DA76B9 /* ServiceTools.m in Sources */,
+				3BF2529F215E07E000DA76B9 /* LMProgressView.m in Sources */,
 				3BEDDBA6214B9C0600E4DA6C /* NSArray+Extension.m in Sources */,
 				3BEDDBA7214B9C0600E4DA6C /* NSDictionary+Extension.m in Sources */,
 				3BEDDBA8214B9C0600E4DA6C /* NSDictionary+toString.m in Sources */,
+				3BF25293215DD06100DA76B9 /* Tools.m in Sources */,
 				3BEDDBA9214B9C0600E4DA6C /* NSString+toDict.m in Sources */,
 				3BD7CA4D2145F54000DFF16F /* ViewController.m in Sources */,
 				3BD7CA582145F54000DFF16F /* main.m in Sources */,

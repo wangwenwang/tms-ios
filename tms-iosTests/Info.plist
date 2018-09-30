@@ -33,9 +33,5 @@
 			</array>
 		</dict>
 	</array>
-	<key>LSApplicationQueriesSchemes</key>
-	<array>
-		<string>weixin</string>
-	</array>
 </dict>
 </plist>
