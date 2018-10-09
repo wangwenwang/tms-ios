@@ -17,8 +17,13 @@
 #import "LMProgressView.h"
 #import <ZipArchive.h>
 #import "AppDelegate.h"
+#import <BaiduMapAPI_Base/BMKGeneralDelegate.h>
+#import <BaiduMapAPI_Base/BMKMapManager.h>
+#import <notify.h>
 
-@interface AppDelegate ()<WXApiDelegate, ServiceToolsDelegate>
+@interface AppDelegate ()<WXApiDelegate, ServiceToolsDelegate, BMKGeneralDelegate>{
+    BMKMapManager * _mapManager;
+}
 
 @property (weak, nonatomic) UIWebView *webView;
 
@@ -30,15 +35,36 @@
 
 @implementation AppDelegate
 
+static void updateEnabled(CFNotificationCenterRef center, void* observer, CFStringRef name, const void* object, CFDictionaryRef userInfo) {
+    uint64_t state;
+    int token;
+    notify_register_check("com.apple.iokit.hid.displayStatus", &token);
+    notify_get_state(token, &state);
+    notify_cancel(token);
+    
+    AppDelegate *app = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    app.displayStatus = [NSString stringWithFormat:@"%lld", state];
+    NSLog(@"屏幕状态：%llu",state);
+}
+
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    // Override point for customization after application launch.
     
-    long long uuu = (1538289790000 - 1537718400000) / 1000 / 60 / 60 / 24;
-    
-    
+    // 默认亮屏
+    _displayStatus = @"1";
+    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, updateEnabled, CFSTR("com.apple.iokit.hid.displayStatus"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+
     // 注册微信凭证
     [WXApi registerApp:@"wx4c368e3f56d8ace2"];
+    
+    // 百度地图
+    _mapManager = [[BMKMapManager alloc] init];
+    BOOL ret = [_mapManager start:@"TWj4fsDeV9hQpmwc8Fqp5A2h2TtCwVXX"  generalDelegate:self];
+    if (!ret) {
+        NSLog(@"百度地图加载失败！");
+    }else {
+        NSLog(@"百度地图加载成功！");
+    }
     
     // 接收webview
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveWebView:) name:kReceive_WebView_Notification object:nil];
@@ -277,6 +303,25 @@
             NSLog(@"刷新内容完成");
         });
     });
+}
+
+#pragma mark - BMKGeneralDelegate
+// 百度地图获取网络连接状态
+- (void)onGetNetworkState:(int)iError {
+    if(iError == 0) {
+        NSLog(@"联网成功");
+    }else {
+        NSLog(@"联网失败，错误代码：Error:%d", iError);
+    }
+}
+
+// 百度地图key是否正确能够连接
+- (void)onGetPermissionState:(int)iError {
+    if (iError == 0) {
+        NSLog(@"授权成功");
+    }else{
+        NSLog(@"授权失败，错误代码：Error:%d", iError);
+    }
 }
 
 @end

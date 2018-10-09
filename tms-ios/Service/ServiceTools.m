@@ -9,8 +9,28 @@
 #import "ServiceTools.h"
 #import <AFNetworking.h>
 #import "Tools.h"
+#import "AppDelegate.h"
+#import "NSString+toDict.h"
+
+@interface ServiceTools()
+
+@property (strong, nonatomic) AppDelegate *app;
+
+@end;
 
 @implementation ServiceTools
+
+- (instancetype)init {
+    
+    if(self = [super init]) {
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            
+            _app = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        });
+    }
+    return self;
+}
 
 - (void)queryAppVersion {
     
@@ -99,6 +119,69 @@
         }
     }];
     [downloadTask resume];
+}
+
+
+- (void)timingTracking:(NSString *)cellphone andLon:(double)lon andLat:(double)lat andVehicleLocation:(NSString *)vehicleLocation  {
+    
+    // 系统版本
+    NSString *os = [UIDevice currentDevice].systemVersion;
+    // 是否充电
+    [UIDevice currentDevice].batteryMonitoringEnabled = YES;
+    NSNumber *charging;
+    if([UIDevice currentDevice].batteryState == UIDeviceBatteryStateUnplugged) {
+        charging = @(0);
+    } else if([UIDevice currentDevice].batteryState == UIDeviceBatteryStateCharging) {
+        charging = @(1);
+    } else if([UIDevice currentDevice].batteryState == UIDeviceBatteryStateUnknown) {
+        charging = @(2);
+    } else if([UIDevice currentDevice].batteryState == UIDeviceBatteryStateFull) {
+        charging = @(3);
+    }
+    // 亮熄屏
+    NSLog(@"亮熄屏: %@", _app.displayStatus);
+    
+    NSString *url = [NSString stringWithFormat:@"%@%@", [Tools getServerAddress], @"timingTrackin.do"];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"application/json", @"text/json", @"text/javascript", @"text/html", @"text/xml", @"text/plain", nil];
+    NSString *params = [NSString stringWithFormat:@"{\"cellphone\":\"%@\", \"userName\":\"%@\", \"vehicleLocation\":\"%@\", \"lon\":\"%@\", \"lat\":\"%@\", \"uuid\":\"%@\", \"code\":\"%@\", \"brightscreen\":\"%@\", \"charging\":\"%@\", \"os\":\"%@\"}", cellphone, @"", vehicleLocation, @(lon), @(lat), @"iOS", @"",  _app.displayStatus, charging, os];
+    NSDictionary *parameters = @{@"params" : params};
+    NSLog(@"上传位置点参数：%@", parameters);
+    
+    [manager POST:url parameters:parameters progress:^(NSProgress * _Nonnull uploadProgress) {
+        nil;
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
+        NSLog(@"请求成功---%@", responseObject);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+        NSLog(@"请求失败---%@", error);
+    }];
+}
+
+- (void)reverseGeo:(NSString *)cellphone andLon:(double)lon andLat:(double)lat {
+    
+    NSString *url = [NSString stringWithFormat:@"http://api.map.baidu.com/geocoder/v2/?callback=renderReverse&location=%f,%f&output=json&pois=1&ak=TWj4fsDeV9hQpmwc8Fqp5A2h2TtCwVXX&mcode=com.kaidongyuan.tms", lat, lon];
+    
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    [manager GET:url parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        
+        NSString *resultS = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+        resultS = [resultS stringByReplacingOccurrencesOfString:@"renderReverse&&renderReverse(" withString:@""];
+        resultS = [resultS substringToIndex:(resultS.length - 1)];
+        NSDictionary *resultD = [resultS toDict];
+        NSString *address = resultD[@"result"][@"formatted_address"];
+        [self timingTracking:cellphone andLon:lon andLat:lat andVehicleLocation:address];
+        
+        
+        NSLog(@"反地理编码成功");
+        
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        
+        NSLog(@"反地理编码失败");
+    }];
 }
 
 @end

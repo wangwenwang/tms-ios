@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Reachability.h"
 #import <Foundation/Foundation.h>
 
 @interface Tools : NSObject
@@ -41,5 +42,21 @@
 
 /// 打开Webview编辑功能
 + (void)openWebviewEdit:(UIWebView *)_webView;
+
+
+/// 判断是否允许定位
++ (BOOL)isLocationServiceOpen;
+
+
+/// 判断网络状态
++ (BOOL)isConnectionAvailable;
+
+
+/// 提示  参数:View    NSString
++ (void)showAlert:(UIView *)view andTitle:(NSString *)title;
+
+
+/// iOS9后坐标纠正
++ (CLLocationCoordinate2D)wgs84ToGcj02:(CLLocationCoordinate2D)location;
 
 @end

@@ -12,5 +12,9 @@
 
 @property (strong, nonatomic) UIWindow *window;
 
+@property (strong, nonatomic) NSString *cellphone;
+
+@property (strong, nonatomic) NSString *displayStatus;
+
 @end
 

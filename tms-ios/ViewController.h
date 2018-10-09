@@ -12,5 +12,8 @@
 
 @property (weak, nonatomic) IBOutlet UIWebView *webView;
 
+// 计时器，固定间隔时间上传位置信息
+@property (strong, nonatomic) NSTimer *localTimer;
+
 @end
 

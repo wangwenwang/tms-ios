@@ -32,6 +32,12 @@
 
 @property (weak, nonatomic)id <ServiceToolsDelegate> delegate;
 
+
+/// 查询版本号
 - (void)queryAppVersion;
+
+
+/// 反地理编码，完成后上传位置点
+- (void)reverseGeo:(NSString *)cellphone andLon:(double)lon andLat:(double)lat;
 
 @end

@@ -12,11 +12,35 @@
 #import <JavaScriptCore/JavaScriptCore.h>
 #import "Tools.h"
 #import <MapKit/MapKit.h>
+#import "ServiceTools.h"
+#import "AppDelegate.h"
 
-@interface ViewController ()<UIGestureRecognizerDelegate, UIWebViewDelegate> {
+@interface ViewController ()<UIGestureRecognizerDelegate, UIWebViewDelegate, BMKLocationServiceDelegate, ServiceToolsDelegate, CLLocationManagerDelegate> {
     
     NSURLRequest *_request;
+    
+    // 百度地图定位服务
+    BMKLocationService *_locationService;
+    
+    // 记录用户最近坐标
+    CLLocationCoordinate2D _location;
+    
+    // 第一次上传位置
+    BOOL _firstLoc;
 }
+
+// 网络层
+@property (strong, nonatomic) ServiceTools *service;
+
+// 弹出3个定位受权（包括iOS11下始终允许）
+@property (strong, nonatomic) CLLocationManager *reqAuth;
+
+// 定位延迟，始终化1，允许定位后为0。 解决iOS11下无法弹出始终允许定位权限(与原生请求定位权限冲突)
+@property (assign, nonatomic) unsigned PositioningDelay;
+
+@property (assign, nonatomic) BOOL allowUpdate;
+
+@property (strong, nonatomic) AppDelegate *app;
 
 @end
 
@@ -24,6 +48,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    _allowUpdate = YES;
     
     // 长按5秒，开启webview编辑模式
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(longPress:)];
@@ -53,9 +79,14 @@
     [_webView loadRequest:[NSURLRequest requestWithURL:url]];
     _request = [NSURLRequest requestWithURL:url];
     
-//    _webView.scrollView.scrollEnabled  = NO;
+    //    _webView.scrollView.scrollEnabled  = NO;
     _webView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     [[NSNotificationCenter defaultCenter] postNotificationName:kReceive_WebView_Notification object:nil userInfo:@{@"webView":_webView}];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    
+    [super viewWillAppear:animated];
 }
 
 
@@ -79,6 +110,7 @@
     context[@"CallAndroidOrIOS"] = ^() {
         NSString * first = @"";
         NSString * second = @"";
+        NSString * third = @"";
         NSArray *args = [JSContext currentArguments];
         for (JSValue *jsVal in args) {
             first = jsVal.toString;
@@ -87,6 +119,10 @@
         @try {
             JSValue *jsVal = args[1];
             second = jsVal.toString;
+        } @catch (NSException *exception) { }
+        @try {
+            JSValue *jsVal = args[2];
+            third = jsVal.toString;
         } @catch (NSException *exception) { }
         
         if([first isEqualToString:@"微信登录"]) {
@@ -101,9 +137,12 @@
         // 第一次加载登录页，不执行此函数，所以还写了一个定时器
         else if([first isEqualToString:@"登录页面已加载"]) {
             
+            // 销毁定时器
+            [_localTimer invalidate];
+            
             if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"weixin://"]] || [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"Whatapp://"]] || [WXApi isWXAppInstalled]) {
                 
-                //微信
+                // 微信
                 NSLog(@"YESWX");
             }else {
                 
@@ -136,15 +175,54 @@
             
             [Tools setServerAddress:second];
         }
-        NSLog(@"js传ios：%@   %@",first, second);
+        // 记住帐号密码，开始定位
+        else if([first isEqualToString:@"记住帐号密码"]) {
+            
+            // 启用定时器
+            [self startUpdataLocationTimer];
+            
+            if([Tools isLocationServiceOpen]) {
+                
+                _PositioningDelay = 0;
+            } else {
+                _PositioningDelay = 1;
+            }
+            
+            // 解决iOS11下无法弹出始终允许定位权限(与原生请求定位权限冲突)
+            dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                
+                sleep(_PositioningDelay);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    
+                    _app = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+                    _app.cellphone = second;
+                    
+                    _locationService = [[BMKLocationService alloc] init];
+                    _locationService.delegate = self;
+                    //启动LocationService
+                    [_locationService startUserLocationService];
+                    //设置定位精度
+                    _locationService.desiredAccuracy = kCLLocationAccuracyHundredMeters;
+                    //指定最小距离更新(米)，默认：kCLDistanceFilterNone
+                    _locationService.distanceFilter = 0;
+                    if(SystemVersion > 9.0) {
+                        _locationService.allowsBackgroundLocationUpdates = YES;
+                    }
+                    _locationService.pausesLocationUpdatesAutomatically = NO;
+                });
+            });
+            if(!_service) {
+                _service = [[ServiceTools alloc] init];
+            }
+            _service.delegate = self;
+        }
+        NSLog(@"js传ios：%@   %@   %@",first, second, third);
     };
 }
 
 
 //导航只需要目的地经纬度，endLocation为纬度、经度的数组
 -(void)doNavigationWithEndLocation:(NSString *)address {
-    
-    NSArray * endLocation = [NSArray arrayWithObjects:@"26.08",@"119.28", nil];
     
     NSMutableArray *maps = [NSMutableArray array];
     
@@ -177,7 +255,7 @@
     if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"comgooglemaps://"]]) {
         NSMutableDictionary *googleMapDic = [NSMutableDictionary dictionary];
         googleMapDic[@"title"] = @"谷歌地图";
-        NSString *urlString = [[NSString stringWithFormat:@"comgooglemaps://?x-source=%@&x-success=%@&saddr=&daddr=%@,%@&directionsmode=driving",@"导航测试",@"nav123456",endLocation[0], endLocation[1]] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+        NSString *urlString = [[NSString stringWithFormat:@"comgooglemaps://?x-source=%@&x-success=%@&saddr=&daddr=%@&directionsmode=driving",@"导航测试",@"nav123456", address] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
         googleMapDic[@"url"] = urlString;
         [maps addObject:googleMapDic];
     }
@@ -235,7 +313,7 @@
 }
 
 
-#pragma mark langPress 长按手势事件
+#pragma mark 长按手势事件
 -(void)longPress:(UILongPressGestureRecognizer *)sender{
     
     if (sender.state == UIGestureRecognizerStateBegan) {
@@ -260,4 +338,46 @@
     
     return YES;
 }
+
+
+#pragma mark - 功能函数
+
+// 上传位置信息
+- (void)updataLocation:(NSTimer *)timer {
+    
+    CLLocationCoordinate2D _lo = _location;
+    if(_lo.latitude != 0 & _lo.longitude != 0)  {
+        
+        //判断连接状态
+        if([Tools isConnectionAvailable]) {
+            
+            [_service reverseGeo:_app.cellphone andLon:_location.longitude andLat:_location.latitude];
+        }
+    }
+}
+
+// 开启间隔时间上传位置点计时器
+- (void)startUpdataLocationTimer {
+    if(_localTimer != nil) {
+        [_localTimer invalidate];
+        NSLog(@"关闭定时上传位置点信息计时器");
+    }
+    _localTimer = [NSTimer scheduledTimerWithTimeInterval:10 * 60 target:self selector:@selector(updataLocation:) userInfo:nil repeats:YES];
+    NSLog(@"开启定时上传位置点信息计时器");
+    _firstLoc = YES;
+}
+
+#pragma mark - 百度地图
+- (void)didUpdateBMKUserLocation:(BMKUserLocation *)userLocation {
+    
+    _location = userLocation.location.coordinate;
+    NSLog(@"位置：%f   %f", _location.longitude, _location.latitude);
+    
+    if(_firstLoc) {
+        
+        [_service reverseGeo:_app.cellphone andLon:_location.longitude andLat:_location.latitude];
+        _firstLoc = NO;
+    }
+}
+
 @end
