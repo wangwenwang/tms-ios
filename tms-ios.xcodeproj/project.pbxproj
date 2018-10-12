@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		3B6A4759216B7C430062908E /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6A4758216B7BE40062908E /* Reachability.m */; };
-		3BA5F9B3216CC15B00255745 /* dist.zip in Resources */ = {isa = PBXBuildFile; fileRef = 3BA5F9B2216CC15000255745 /* dist.zip */; };
+		3B968211216FA5AB007CC88F /* dist.zip in Resources */ = {isa = PBXBuildFile; fileRef = 3B968210216FA59C007CC88F /* dist.zip */; };
 		3BD7CA4A2145F54000DFF16F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BD7CA492145F54000DFF16F /* AppDelegate.m */; };
 		3BD7CA4D2145F54000DFF16F /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BD7CA4C2145F54000DFF16F /* ViewController.m */; };
 		3BD7CA502145F54000DFF16F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3BD7CA4E2145F54000DFF16F /* Main.storyboard */; };
@@ -55,7 +55,7 @@
 		3B6A4762216C85210062908E /* NSDictionary+toString.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+toString.m"; sourceTree = "<group>"; };
 		3B6A4763216C85210062908E /* NSString+toDict.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+toDict.h"; sourceTree = "<group>"; };
 		3B6A4764216C85210062908E /* NSString+toDict.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+toDict.m"; sourceTree = "<group>"; };
-		3BA5F9B2216CC15000255745 /* dist.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = dist.zip; sourceTree = "<group>"; };
+		3B968210216FA59C007CC88F /* dist.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = dist.zip; sourceTree = "<group>"; };
 		3BD7CA452145F54000DFF16F /* tms-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "tms-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3BD7CA482145F54000DFF16F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		3BD7CA492145F54000DFF16F /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -177,7 +177,7 @@
 		3BD7CA472145F54000DFF16F /* tms-ios */ = {
 			isa = PBXGroup;
 			children = (
-				3BA5F9B2216CC15000255745 /* dist.zip */,
+				3B968210216FA59C007CC88F /* dist.zip */,
 				3BD7CA7A2145F66000DFF16F /* Default-568@2x.png */,
 				3B6A475C216C85210062908E /* Category */,
 				3BF2529C215E06FD00DA76B9 /* Third */,
@@ -373,7 +373,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3BA5F9B3216CC15B00255745 /* dist.zip in Resources */,
+				3B968211216FA5AB007CC88F /* dist.zip in Resources */,
 				3BD7CA552145F54000DFF16F /* LaunchScreen.storyboard in Resources */,
 				3BD7CA522145F54000DFF16F /* Assets.xcassets in Resources */,
 				3BD7CA502145F54000DFF16F /* Main.storyboard in Resources */,

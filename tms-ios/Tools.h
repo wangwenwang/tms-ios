@@ -59,4 +59,16 @@
 /// iOS9后坐标纠正
 + (CLLocationCoordinate2D)wgs84ToGcj02:(CLLocationCoordinate2D)location;
 
+
+/// 设置上一次启动的版本号
++ (void)setLastVersion;
+
+
+/// 获取上一次启动的版本号
++ (NSString *)getLastVersion;
+
+
+/// 获取当前版本号
++ (NSString *)getCFBundleShortVersionString;
+
 @end

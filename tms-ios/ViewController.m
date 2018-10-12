@@ -49,6 +49,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    // 初始化信息
+    _app = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     _allowUpdate = YES;
     
     // 长按5秒，开启webview编辑模式
@@ -62,16 +64,18 @@
     
     NSString *checkFilePath = [unzipPath  stringByAppendingPathComponent:@"dist/index.html"];
     NSFileManager *fileManager = [NSFileManager defaultManager];
-    if ([fileManager fileExistsAtPath:checkFilePath]) {
+    
+    if ([fileManager fileExistsAtPath:checkFilePath] && [[Tools getLastVersion] isEqualToString:[Tools getCFBundleShortVersionString]]) {
         
         NSLog(@"HTML已存在，无需解压");
     } else {
         
-        NSLog(@"第一次加载，解压");
+        NSLog(@"第一次加载，或版本有更新，解压");
         NSString *zipPath = [[NSBundle mainBundle] pathForResource:@"dist" ofType:@"zip"];
         NSLog(@"zipPath:%@", zipPath);
         [SSZipArchive unzipFileAtPath:zipPath toDestination:unzipPath];
     }
+    [Tools setLastVersion];
     
     // 加载URL
     NSString *filePath = [NSString stringWithFormat:@"%@/dist/%@", unzipPath, @"index.html"];
@@ -154,9 +158,7 @@
                 });
             }
             
-            NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
-            NSString *app_Version = [infoDictionary objectForKey:@"CFBundleShortVersionString"];
-            NSString *jsStrVersion = [NSString stringWithFormat:@"VersionShow('版本:%@')", app_Version];
+            NSString *jsStrVersion = [NSString stringWithFormat:@"VersionShow('版本:%@')", [Tools getCFBundleShortVersionString]];
             NSLog(@"%@",jsStrVersion);
             dispatch_async(dispatch_get_main_queue(), ^{
                 [_webView stringByEvaluatingJavaScriptFromString:jsStrVersion];
@@ -194,7 +196,6 @@
                 sleep(_PositioningDelay);
                 dispatch_async(dispatch_get_main_queue(), ^{
                     
-                    _app = (AppDelegate *)[[UIApplication sharedApplication] delegate];
                     _app.cellphone = second;
                     
                     _locationService = [[BMKLocationService alloc] init];

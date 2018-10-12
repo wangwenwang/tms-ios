@@ -16,5 +16,7 @@
 
 @property (strong, nonatomic) NSString *displayStatus;
 
+@property (strong, nonatomic) NSString *app_version;
+
 @end
 

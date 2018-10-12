@@ -120,57 +120,22 @@
     [hud hideAnimated:YES afterDelay:1.5];
 }
 
-+ (CLLocationCoordinate2D)wgs84ToGcj02:(CLLocationCoordinate2D)location {
-    return [self gcj02Encrypt:location.latitude bdLon:location.longitude];
-}
-
-+ (CLLocationCoordinate2D)gcj02Encrypt:(double)ggLat bdLon:(double)ggLon {
-    CLLocationCoordinate2D resPoint;
-    double mgLat;
-    double mgLon;
-    if ([self outOfChina:ggLat bdLon:ggLon]) {
-        resPoint.latitude = ggLat;
-        resPoint.longitude = ggLon;
-        return resPoint;
-    }
-    double dLat = [self transformLat:(ggLon - 105.0)bdLon:(ggLat - 35.0)];
-    double dLon = [self transformLon:(ggLon - 105.0) bdLon:(ggLat - 35.0)];
-    double radLat = ggLat / 180.0 * M_PI;
-    double magic = sin(radLat);
-    magic = 1 - jzEE * magic * magic;
-    double sqrtMagic = sqrt(magic);
-    dLat = (dLat * 180.0) / ((jzA * (1 - jzEE)) / (magic * sqrtMagic) * M_PI);
-    dLon = (dLon * 180.0) / (jzA / sqrtMagic * cos(radLat) * M_PI);
-    mgLat = ggLat + dLat;
-    mgLon = ggLon + dLon;
++ (void)setLastVersion {
     
-    resPoint.latitude = mgLat;
-    resPoint.longitude = mgLon;
-    return resPoint;
+    NSString *app_version = [self getCFBundleShortVersionString];
+    [[NSUserDefaults standardUserDefaults] setValue:app_version forKey:kUserDefaults_Last_Version_key];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-+ (BOOL)outOfChina:(double)lat bdLon:(double)lon {
-    if (lon < RANGE_LON_MIN || lon > RANGE_LON_MAX)
-        return true;
-    if (lat < RANGE_LAT_MIN || lat > RANGE_LAT_MAX)
-        return true;
-    return false;
++ (NSString *)getLastVersion {
+    
+     return [[NSUserDefaults standardUserDefaults] stringForKey:kUserDefaults_Last_Version_key];
 }
 
-+ (double)transformLat:(double)x bdLon:(double)y {
-    double ret = LAT_OFFSET_0(x, y);
-    ret += LAT_OFFSET_1;
-    ret += LAT_OFFSET_2;
-    ret += LAT_OFFSET_3;
-    return ret;
-}
-
-+ (double)transformLon:(double)x bdLon:(double)y {
-    double ret = LON_OFFSET_0(x, y);
-    ret += LON_OFFSET_1;
-    ret += LON_OFFSET_2;
-    ret += LON_OFFSET_3;
-    return ret;
++ (NSString *)getCFBundleShortVersionString {
+    
+    NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
+    return [infoDictionary objectForKey:@"CFBundleShortVersionString"];
 }
 
 @end

@@ -35,6 +35,9 @@
 
 #define kUserDefaults_Server_Address_key @"ServerAddress"
 
+// 记住上一次版本号，解决版本更新时沙盒内容不清空问题
+#define kUserDefaults_Last_Version_key @"LastVersion"
+
 
 /*--------- 屏幕尺寸 ---------*/
 #define ScreenHeight [UIScreen mainScreen] .bounds.size.height
