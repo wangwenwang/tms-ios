@@ -31,12 +31,12 @@
 			<string>wechatauthdemo</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>wx4c368e3f56d8ace2</string>
+				<string>wx011d8094226f8fbc</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>10</string>
+	<string>17</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>weixin</string>
@@ -52,15 +52,17 @@
 		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>APP需要您的同意才能使用相机</string>
+	<string>APP需要您的同意才能使用相机，用于拍照上传交付照片</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>您的位置将被保存，用来记录您货物订单经过路线的轨迹，可在查看路线中进行查看，请选择"始终允许"以保证您的定位正常</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>您的位置将被保存，用来记录您货物订单经过路线的轨迹，可在查看路线中进行查看，请选择"始终允许"以保证您的定位正常</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>APP需要您的同意才能获取当前位置</string>
+	<string>您的位置将被保存，用来记录您货物订单经过路线的轨迹，可在查看路线中进行查看，请选择"始终允许"以保证您的定位正常</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>APP需要使用您的麦克风，才能完成视频的录制与上传到服务器，让其他用户看到</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>APP需要您的同意才能读取媒体资料库</string>
+	<string>APP需要您的同意才能读取媒体资料库，用于上传交付照片</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>

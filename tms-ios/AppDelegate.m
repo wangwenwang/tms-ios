@@ -55,11 +55,13 @@ static void updateEnabled(CFNotificationCenterRef center, void* observer, CFStri
     CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, updateEnabled, CFSTR("com.apple.iokit.hid.displayStatus"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
 
     // 注册微信凭证
-    [WXApi registerApp:@"wx4c368e3f56d8ace2"];
+    [WXApi registerApp:WXAPPID];
     
     // 百度地图
     _mapManager = [[BMKMapManager alloc] init];
-    BOOL ret = [_mapManager start:@"TWj4fsDeV9hQpmwc8Fqp5A2h2TtCwVXX"  generalDelegate:self];
+    // 创云司机宝   TWj4fsDeV9hQpmwc8Fqp5A2h2TtCwVXX
+    // 配货易司机S  YFrda3EPHAM8DbC1IOeegrZDfuDwCwW6
+    BOOL ret = [_mapManager start:@"YFrda3EPHAM8DbC1IOeegrZDfuDwCwW6"  generalDelegate:self];
     if (!ret) {
         NSLog(@"百度地图加载失败！");
     }else {
@@ -151,8 +153,8 @@ static void updateEnabled(CFNotificationCenterRef center, void* observer, CFStri
         }else {
             
             NSString *code = rep.code;
-            NSString *appid = @"wx4c368e3f56d8ace2";
-            NSString *appsecret = @"f8faea84b624079c51d59b42185bae31";
+            NSString *appid = WXAPPID;
+            NSString *appsecret = WXAPPSECRED;
             NSString *url = [NSString stringWithFormat:@"https://api.weixin.qq.com/sns/oauth2/access_token?appid=%@&secret=%@&code=%@&grant_type=authorization_code", appid, appsecret, code];
             
             AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
@@ -178,10 +180,9 @@ static void updateEnabled(CFNotificationCenterRef center, void* observer, CFStri
 
 // 获取tms用户信息
 - (void)bindingWX:(NSString *)openid {
-    ;
+    
     NSString *params = [NSString stringWithFormat:@"{\"wxOpenid\":\"%@\"}", openid];
     NSString *paramsEncoding = [params stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-    AppDelegate *app = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     NSString *url = [NSString stringWithFormat:@"%@login.do?params=%@", [Tools getServerAddress], paramsEncoding];
     NSLog(@"请求tms用户信息参数：%@",url);
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];

@@ -11,6 +11,7 @@
 #import "Tools.h"
 #import "AppDelegate.h"
 #import "NSString+toDict.h"
+#import "IOSToVue.h"
 
 @interface ServiceTools()
 
@@ -45,7 +46,7 @@
                 manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"application/json", @"text/json", @"text/javascript", @"text/html", @"text/xml", @"text/plain", nil];
                 NSString *params = @"{\"tenantCode\":\"KDY\"}";
                 NSDictionary *parameters = @{@"params" : params};
-                NSLog(@"zip检测参数：%@", parameters);
+                NSLog(@"接口:%@|zip检测参数：%@", url, parameters);
                 
                 [manager POST:url parameters:parameters progress:^(NSProgress * _Nonnull uploadProgress) {
                     nil;
@@ -141,7 +142,10 @@
     // 亮熄屏
     NSLog(@"亮熄屏: %@", _app.displayStatus);
     
-    NSString *url = [NSString stringWithFormat:@"%@%@", [Tools getServerAddress], @"timingTrackin.do"];
+    NSString *url = [NSString stringWithFormat:@"%@%@", [Tools getServerAddress], @"timingTracking.do"];
+    
+    NSLog(@"上传定位接口:%@", url);
+    
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     manager.responseSerializer.acceptableContentTypes = [NSSet setWithObjects:@"application/json", @"text/json", @"text/javascript", @"text/html", @"text/xml", @"text/plain", nil];
     NSString *params = [NSString stringWithFormat:@"{\"cellphone\":\"%@\", \"userName\":\"%@\", \"vehicleLocation\":\"%@\", \"lon\":\"%@\", \"lat\":\"%@\", \"uuid\":\"%@\", \"code\":\"%@\", \"brightscreen\":\"%@\", \"charging\":\"%@\", \"os\":\"%@\"}", cellphone, @"", vehicleLocation, @(lon), @(lat), @"iOS", @"",  _app.displayStatus, charging, os];
@@ -159,7 +163,7 @@
     }];
 }
 
-- (void)reverseGeo:(NSString *)cellphone andLon:(double)lon andLat:(double)lat {
+- (void)reverseGeo:(NSString *)cellphone andLon:(double)lon andLat:(double)lat andWebView:(nullable UIWebView *)webView{
     
     NSString *url = [NSString stringWithFormat:@"http://api.map.baidu.com/geocoder/v2/?callback=renderReverse&location=%f,%f&output=json&pois=1&ak=TWj4fsDeV9hQpmwc8Fqp5A2h2TtCwVXX&mcode=com.kaidongyuan.tms", lat, lon];
     
@@ -168,15 +172,15 @@
     [manager GET:url parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
+        NSLog(@"反地理编码成功");
+        
         NSString *resultS = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
         resultS = [resultS stringByReplacingOccurrencesOfString:@"renderReverse&&renderReverse(" withString:@""];
         resultS = [resultS substringToIndex:(resultS.length - 1)];
         NSDictionary *resultD = [resultS toDict];
         NSString *address = resultD[@"result"][@"formatted_address"];
+//        [IOSToVue TellVueCurrAddress:webView andAddress:address];
         [self timingTracking:cellphone andLon:lon andLat:lat andVehicleLocation:address];
-        
-        
-        NSLog(@"反地理编码成功");
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         

@@ -14,6 +14,8 @@
 #import <MapKit/MapKit.h>
 #import "ServiceTools.h"
 #import "AppDelegate.h"
+#import "CheckOrderPathViewController.h"
+#import "IOSToVue.h"
 
 @interface ViewController ()<UIGestureRecognizerDelegate, UIWebViewDelegate, BMKLocationServiceDelegate, ServiceToolsDelegate, CLLocationManagerDelegate> {
     
@@ -49,6 +51,46 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    
+    if ([[_webView subviews] count] > 0) {
+        // hide the shadows
+        for (UIView* shadowView in [[[_webView subviews] objectAtIndex:0] subviews]) {
+            [shadowView setHidden:YES];
+        }
+        // show the content
+        [[[[[_webView subviews] objectAtIndex:0] subviews] lastObject] setHidden:NO];
+    }
+    _webView.backgroundColor = [UIColor whiteColor];
+    for (UIView *subView in [_webView subviews]) {
+        
+        if ([subView isKindOfClass:[UIScrollView class]]) {
+            
+            for (UIView *shadowView in [subView subviews]) {
+                
+                if ([shadowView isKindOfClass:[UIImageView class]]) {
+                    
+                    shadowView.hidden = YES;
+                }
+            }
+        }
+    }
+    _webView.opaque=NO;
+    _webView.backgroundColor=[UIColor clearColor];
+    
+    UIScrollView *scroller = [_webView.subviews objectAtIndex:0];
+    
+    //去掉webview 上下只阴影部分
+    _webView .opaque = NO;
+    for (UIView *subView in [scroller subviews]) {
+        
+        if ([[[subView class] description] isEqualToString:@"UIImageView"]) {
+            
+            subView.hidden = YES;
+        }
+    }
+    _webView.backgroundColor=[UIColor clearColor];
+    
+    
     // 初始化信息
     _app = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     _allowUpdate = YES;
@@ -58,6 +100,7 @@
     longPress.delegate = self;
     longPress.minimumPressDuration = 5;
     [_webView addGestureRecognizer:longPress];
+    
     
     NSString *unzipPath = [Tools getUnzipPath];
     NSLog(@"unzipPath:%@", unzipPath);
@@ -83,9 +126,31 @@
     [_webView loadRequest:[NSURLRequest requestWithURL:url]];
     _request = [NSURLRequest requestWithURL:url];
     
-    //    _webView.scrollView.scrollEnabled  = NO;
     _webView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     [[NSNotificationCenter defaultCenter] postNotificationName:kReceive_WebView_Notification object:nil userInfo:@{@"webView":_webView}];
+    
+    // 禁用弹簧效果
+    for (id subview in _webView.subviews){
+        if ([[subview class] isSubclassOfClass: [UIScrollView class]]) {
+            ((UIScrollView *)subview).bounces = NO;
+        }
+    }
+    
+    
+    // 取消右侧，下侧滚动条，去处上下滚动边界的黑色背景
+    for (UIView *_aView in [_webView subviews]) {
+        if ([_aView isKindOfClass:[UIScrollView class]]) {
+            [(UIScrollView *)_aView setShowsVerticalScrollIndicator:NO];
+            //右侧的滚动条
+            [(UIScrollView *)_aView setShowsHorizontalScrollIndicator:NO];
+            //下侧的滚动条
+            for (UIView *_inScrollview in _aView.subviews) {
+                if ([_inScrollview isKindOfClass:[UIImageView class]]) {
+                    _inScrollview.hidden = YES;  //上下滚动出边界时的黑色的图片
+                }
+            }
+        }
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -108,6 +173,8 @@
 
 // webViewDidFinishLoad方法晚于vue的mounted函数 0.3秒左右，不采用
 - (void)webViewDidStartLoad:(UIWebView *)webView{
+    
+    NSLog(@"------webViewDidStartLoad");
     
     // iOS监听vue的函数
     JSContext *context = [self.webView valueForKeyPath:@"documentView.webView.mainFrame.javaScriptContext"];
@@ -163,6 +230,8 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 [_webView stringByEvaluatingJavaScriptFromString:jsStrVersion];
             });
+            
+            [IOSToVue TellVueDevice:_webView andDevice:@"iOS"];
         }
         // 导航
         else if([first isEqualToString:@"导航"]) {
@@ -170,6 +239,14 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 
                 [self doNavigationWithEndLocation:second];
+            });
+        }
+        // 查看路线
+        else if([first isEqualToString:@"查看路线"]) {
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                [self showLocLine:second];
             });
         }
         // 服务器地址
@@ -189,6 +266,20 @@
             } else {
                 _PositioningDelay = 1;
             }
+            
+            // 判断定位权限  延迟检查，因为用户首次选择需要时间
+            dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                
+                sleep(7);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    
+                    if([Tools isLocationServiceOpen]) {
+                        NSLog(@"应用拥有定位权限");
+                    } else {
+                        [Tools skipLocationSettings];
+                    }
+                });
+            });
             
             // 解决iOS11下无法弹出始终允许定位权限(与原生请求定位权限冲突)
             dispatch_async(dispatch_get_global_queue(0, 0), ^{
@@ -343,6 +434,14 @@
 
 #pragma mark - 功能函数
 
+// 查看路线
+- (void)showLocLine:(NSString *)shipmentId {
+    
+    CheckOrderPathViewController *vc = [[CheckOrderPathViewController alloc] init];
+    vc.orderIDX = shipmentId;
+    [self presentViewController:vc animated:YES completion:nil];
+}
+
 // 上传位置信息
 - (void)updataLocation:(NSTimer *)timer {
     
@@ -352,7 +451,7 @@
         //判断连接状态
         if([Tools isConnectionAvailable]) {
             
-            [_service reverseGeo:_app.cellphone andLon:_location.longitude andLat:_location.latitude];
+            [_service reverseGeo:_app.cellphone andLon:_location.longitude andLat:_location.latitude andWebView:_webView];
         }
     }
 }
@@ -376,7 +475,7 @@
     
     if(_firstLoc) {
         
-        [_service reverseGeo:_app.cellphone andLon:_location.longitude andLat:_location.latitude];
+        [_service reverseGeo:_app.cellphone andLon:_location.longitude andLat:_location.latitude andWebView:_webView];
         _firstLoc = NO;
     }
 }

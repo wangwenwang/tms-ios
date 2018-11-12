@@ -7,8 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3B2087882195296C000C36A9 /* CheckOrderPathViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B2087852195296A000C36A9 /* CheckOrderPathViewController.m */; };
+		3B20878B219529DF000C36A9 /* CheckPathService.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B208789219529DE000C36A9 /* CheckPathService.m */; };
+		3B20878E21952A3D000C36A9 /* RouteAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B20878C21952A3D000C36A9 /* RouteAnnotation.m */; };
+		3B20879121952A78000C36A9 /* LocationModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B20878F21952A78000C36A9 /* LocationModel.m */; };
+		3B208794219536A6000C36A9 /* CheckOrderPathViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B2087872195296B000C36A9 /* CheckOrderPathViewController.xib */; };
+		3B20879E21958D1D000C36A9 /* IOSToVue.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B20879D21958D1D000C36A9 /* IOSToVue.m */; };
 		3B6A4759216B7C430062908E /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6A4758216B7BE40062908E /* Reachability.m */; };
-		3B968211216FA5AB007CC88F /* dist.zip in Resources */ = {isa = PBXBuildFile; fileRef = 3B968210216FA59C007CC88F /* dist.zip */; };
+		3B6A761E218025FC00C55026 /* LM_alert.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6A761D2180259D00C55026 /* LM_alert.m */; };
+		3B6A761F2180260300C55026 /* NSArray+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6A475E216C85210062908E /* NSArray+Extension.m */; };
+		3B6A76202180260700C55026 /* NSDictionary+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6A4760216C85210062908E /* NSDictionary+Extension.m */; };
+		3B6A76212180260A00C55026 /* NSDictionary+toString.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6A4762216C85210062908E /* NSDictionary+toString.m */; };
+		3B6A76222180260D00C55026 /* NSString+toDict.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6A4764216C85210062908E /* NSString+toDict.m */; };
+		3B715363219903AA00B475B3 /* dist.zip in Resources */ = {isa = PBXBuildFile; fileRef = 3B7153622199039C00B475B3 /* dist.zip */; };
 		3BD7CA4A2145F54000DFF16F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BD7CA492145F54000DFF16F /* AppDelegate.m */; };
 		3BD7CA4D2145F54000DFF16F /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3BD7CA4C2145F54000DFF16F /* ViewController.m */; };
 		3BD7CA502145F54000DFF16F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3BD7CA4E2145F54000DFF16F /* Main.storyboard */; };
@@ -45,6 +56,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3B2087852195296A000C36A9 /* CheckOrderPathViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CheckOrderPathViewController.m; sourceTree = "<group>"; };
+		3B2087862195296B000C36A9 /* CheckOrderPathViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CheckOrderPathViewController.h; sourceTree = "<group>"; };
+		3B2087872195296B000C36A9 /* CheckOrderPathViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CheckOrderPathViewController.xib; sourceTree = "<group>"; };
+		3B208789219529DE000C36A9 /* CheckPathService.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CheckPathService.m; sourceTree = "<group>"; };
+		3B20878A219529DE000C36A9 /* CheckPathService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CheckPathService.h; sourceTree = "<group>"; };
+		3B20878C21952A3D000C36A9 /* RouteAnnotation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RouteAnnotation.m; sourceTree = "<group>"; };
+		3B20878D21952A3D000C36A9 /* RouteAnnotation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RouteAnnotation.h; sourceTree = "<group>"; };
+		3B20878F21952A78000C36A9 /* LocationModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LocationModel.m; sourceTree = "<group>"; };
+		3B20879021952A78000C36A9 /* LocationModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LocationModel.h; sourceTree = "<group>"; };
+		3B20879C21958D1D000C36A9 /* IOSToVue.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IOSToVue.h; sourceTree = "<group>"; };
+		3B20879D21958D1D000C36A9 /* IOSToVue.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IOSToVue.m; sourceTree = "<group>"; };
 		3B6A4757216B7BE40062908E /* Reachability.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		3B6A4758216B7BE40062908E /* Reachability.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		3B6A475D216C85210062908E /* NSArray+Extension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSArray+Extension.h"; sourceTree = "<group>"; };
@@ -55,7 +77,9 @@
 		3B6A4762216C85210062908E /* NSDictionary+toString.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+toString.m"; sourceTree = "<group>"; };
 		3B6A4763216C85210062908E /* NSString+toDict.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+toDict.h"; sourceTree = "<group>"; };
 		3B6A4764216C85210062908E /* NSString+toDict.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+toDict.m"; sourceTree = "<group>"; };
-		3B968210216FA59C007CC88F /* dist.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = dist.zip; sourceTree = "<group>"; };
+		3B6A761C2180259D00C55026 /* LM_alert.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LM_alert.h; sourceTree = "<group>"; };
+		3B6A761D2180259D00C55026 /* LM_alert.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LM_alert.m; sourceTree = "<group>"; };
+		3B7153622199039C00B475B3 /* dist.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = dist.zip; sourceTree = "<group>"; };
 		3BD7CA452145F54000DFF16F /* tms-ios.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "tms-ios.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3BD7CA482145F54000DFF16F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		3BD7CA492145F54000DFF16F /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -152,6 +176,19 @@
 			path = "../../../../wms/dev/wms-ios/wms-ios/Category";
 			sourceTree = "<group>";
 		};
+		3B6A761B2180259D00C55026 /* Custum */ = {
+			isa = PBXGroup;
+			children = (
+				3B20878D21952A3D000C36A9 /* RouteAnnotation.h */,
+				3B20878C21952A3D000C36A9 /* RouteAnnotation.m */,
+				3B6A761C2180259D00C55026 /* LM_alert.h */,
+				3B6A761D2180259D00C55026 /* LM_alert.m */,
+				3B20879021952A78000C36A9 /* LocationModel.h */,
+				3B20878F21952A78000C36A9 /* LocationModel.m */,
+			);
+			path = Custum;
+			sourceTree = "<group>";
+		};
 		3BD7CA3C2145F54000DFF16F = {
 			isa = PBXGroup;
 			children = (
@@ -177,9 +214,10 @@
 		3BD7CA472145F54000DFF16F /* tms-ios */ = {
 			isa = PBXGroup;
 			children = (
-				3B968210216FA59C007CC88F /* dist.zip */,
+				3B7153622199039C00B475B3 /* dist.zip */,
 				3BD7CA7A2145F66000DFF16F /* Default-568@2x.png */,
 				3B6A475C216C85210062908E /* Category */,
+				3B6A761B2180259D00C55026 /* Custum */,
 				3BF2529C215E06FD00DA76B9 /* Third */,
 				3BF25299215E06F200DA76B9 /* Service */,
 				3BEDDB9D214B932700E4DA6C /* Category */,
@@ -187,8 +225,15 @@
 				3BD7CA492145F54000DFF16F /* AppDelegate.m */,
 				3BD7CA4B2145F54000DFF16F /* ViewController.h */,
 				3BD7CA4C2145F54000DFF16F /* ViewController.m */,
+				3B20879C21958D1D000C36A9 /* IOSToVue.h */,
+				3B20879D21958D1D000C36A9 /* IOSToVue.m */,
 				3BF25291215DD06100DA76B9 /* Tools.h */,
 				3BF25292215DD06100DA76B9 /* Tools.m */,
+				3B2087862195296B000C36A9 /* CheckOrderPathViewController.h */,
+				3B2087852195296A000C36A9 /* CheckOrderPathViewController.m */,
+				3B2087872195296B000C36A9 /* CheckOrderPathViewController.xib */,
+				3B20878A219529DE000C36A9 /* CheckPathService.h */,
+				3B208789219529DE000C36A9 /* CheckPathService.m */,
 				3BD7CA4E2145F54000DFF16F /* Main.storyboard */,
 				3BD7CA512145F54000DFF16F /* Assets.xcassets */,
 				3BD7CA532145F54000DFF16F /* LaunchScreen.storyboard */,
@@ -373,7 +418,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3B968211216FA5AB007CC88F /* dist.zip in Resources */,
+				3B715363219903AA00B475B3 /* dist.zip in Resources */,
+				3B208794219536A6000C36A9 /* CheckOrderPathViewController.xib in Resources */,
 				3BD7CA552145F54000DFF16F /* LaunchScreen.storyboard in Resources */,
 				3BD7CA522145F54000DFF16F /* Assets.xcassets in Resources */,
 				3BD7CA502145F54000DFF16F /* Main.storyboard in Resources */,
@@ -440,14 +486,24 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3B6A76222180260D00C55026 /* NSString+toDict.m in Sources */,
+				3B6A76212180260A00C55026 /* NSDictionary+toString.m in Sources */,
+				3B6A76202180260700C55026 /* NSDictionary+Extension.m in Sources */,
+				3B6A761F2180260300C55026 /* NSArray+Extension.m in Sources */,
+				3B6A761E218025FC00C55026 /* LM_alert.m in Sources */,
 				3B6A4759216B7C430062908E /* Reachability.m in Sources */,
+				3B2087882195296C000C36A9 /* CheckOrderPathViewController.m in Sources */,
 				3BF252A0215E07E300DA76B9 /* ServiceTools.m in Sources */,
 				3BF2529F215E07E000DA76B9 /* LMProgressView.m in Sources */,
+				3B20878B219529DF000C36A9 /* CheckPathService.m in Sources */,
+				3B20879E21958D1D000C36A9 /* IOSToVue.m in Sources */,
 				3BEDDBA6214B9C0600E4DA6C /* NSArray+Extension.m in Sources */,
+				3B20878E21952A3D000C36A9 /* RouteAnnotation.m in Sources */,
 				3BEDDBA7214B9C0600E4DA6C /* NSDictionary+Extension.m in Sources */,
 				3BEDDBA8214B9C0600E4DA6C /* NSDictionary+toString.m in Sources */,
 				3BF25293215DD06100DA76B9 /* Tools.m in Sources */,
 				3BEDDBA9214B9C0600E4DA6C /* NSString+toDict.m in Sources */,
+				3B20879121952A78000C36A9 /* LocationModel.m in Sources */,
 				3BD7CA4D2145F54000DFF16F /* ViewController.m in Sources */,
 				3BD7CA582145F54000DFF16F /* main.m in Sources */,
 				3BD7CA4A2145F54000DFF16F /* AppDelegate.m in Sources */,

@@ -31,7 +31,7 @@
 
 #define kUserDefaults_ZipVersion_local_key @"ZipVersion"
 
-#define kUserDefaults_ZipVersion_local_defaultValue @"0.0.0"
+#define kUserDefaults_ZipVersion_local_defaultValue @"0.0.2"
 
 #define kUserDefaults_Server_Address_key @"ServerAddress"
 
@@ -53,9 +53,21 @@
 #define SystemVersion [[UIDevice currentDevice] systemVersion].floatValue
 
 
-//锁屏通知
+/*--------- 应用名称 ---------*/
+#define AppDisplayName [[NSBundle mainBundle] infoDictionary][@"CFBundleDisplayName"]
+
+
+// 锁屏通知
 #define NotificationOff CFSTR("com.apple.springboard.lockcomplete")
 
 
-//解锁通知
+// 解锁通知
 #define NotificationOn CFSTR("com.apple.springboard.hasBlankedScreen")
+
+
+// 微信AppID
+#define WXAPPID @"wx011d8094226f8fbc"
+
+
+// 微信AppSecret
+#define WXAPPSECRED @"2acb3abc7ecdb074960ac039742d60fe"

@@ -8,24 +8,8 @@
 
 #import "Tools.h"
 #import <MBProgressHUD.h>
-
-#define LAT_OFFSET_0(x,y) -100.0 + 2.0 * x + 3.0 * y + 0.2 * y * y + 0.1 * x * y + 0.2 * sqrt(fabs(x))
-#define LAT_OFFSET_1 (20.0 * sin(6.0 * x * M_PI) + 20.0 * sin(2.0 * x * M_PI)) * 2.0 / 3.0
-#define LAT_OFFSET_2 (20.0 * sin(y * M_PI) + 40.0 * sin(y / 3.0 * M_PI)) * 2.0 / 3.0
-#define LAT_OFFSET_3 (160.0 * sin(y / 12.0 * M_PI) + 320 * sin(y * M_PI / 30.0)) * 2.0 / 3.0
-
-#define LON_OFFSET_0(x,y) 300.0 + x + 2.0 * y + 0.1 * x * x + 0.1 * x * y + 0.1 * sqrt(fabs(x))
-#define LON_OFFSET_1 (20.0 * sin(6.0 * x * M_PI) + 20.0 * sin(2.0 * x * M_PI)) * 2.0 / 3.0
-#define LON_OFFSET_2 (20.0 * sin(x * M_PI) + 40.0 * sin(x / 3.0 * M_PI)) * 2.0 / 3.0
-#define LON_OFFSET_3 (150.0 * sin(x / 12.0 * M_PI) + 300.0 * sin(x / 30.0 * M_PI)) * 2.0 / 3.0
-
-#define RANGE_LON_MAX 137.8347
-#define RANGE_LON_MIN 72.004
-#define RANGE_LAT_MAX 55.8271
-#define RANGE_LAT_MIN 0.8293
-
-#define jzA 6378245.0
-#define jzEE 0.00669342162296594323
+#import "LM_alert.h"
+#import "AppDelegate.h"
 
 @implementation Tools
 
@@ -120,6 +104,16 @@
     [hud hideAnimated:YES afterDelay:1.5];
 }
 
++ (void)showAlert:(nullable UIView *)view andTitle:(nullable NSString *)title andTime:(NSTimeInterval)time {
+    MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:view animated:YES];
+    hud.mode = MBProgressHUDModeText;
+    hud.label.text = title;
+    hud.margin = 15.0f;
+    hud.removeFromSuperViewOnHide = YES;
+    hud.userInteractionEnabled = NO;
+    [hud hideAnimated:YES afterDelay:time];
+}
+
 + (void)setLastVersion {
     
     NSString *app_version = [self getCFBundleShortVersionString];
@@ -127,15 +121,30 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-+ (NSString *)getLastVersion {
++ (nullable NSString *)getLastVersion {
     
      return [[NSUserDefaults standardUserDefaults] stringForKey:kUserDefaults_Last_Version_key];
 }
 
-+ (NSString *)getCFBundleShortVersionString {
++ (nullable NSString *)getCFBundleShortVersionString {
     
     NSDictionary *infoDictionary = [[NSBundle mainBundle] infoDictionary];
     return [infoDictionary objectForKey:@"CFBundleShortVersionString"];
+}
+
++ (void)skipLocationSettings {
+    AppDelegate *app = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    NSString *promptLocation = [NSString stringWithFormat:@"请打开系统设置中\"隐私->定位服务\",允许%@使用定位服务", AppDisplayName];
+    [LM_alert showLMAlertViewWithTitle:@"打开定位开关" message:promptLocation cancleButtonTitle:nil okButtonTitle:@"立即设置" otherButtonTitleArray:nil clickHandle:^(NSInteger index) {
+        if(SystemVersion > 8.0) {
+            NSURL *url = [NSURL URLWithString:UIApplicationOpenSettingsURLString];
+            if ([[UIApplication sharedApplication] canOpenURL:url]) {
+                [[UIApplication sharedApplication] openURL:url];
+            }
+        } else {
+            [self showAlert:app.window andTitle:@"不支持iOS及以下设备"];
+        }
+    }];
 }
 
 @end

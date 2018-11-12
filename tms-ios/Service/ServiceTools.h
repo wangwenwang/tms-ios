@@ -11,10 +11,10 @@
 @protocol ServiceToolsDelegate <NSObject>
 
 @optional
-- (void)successOfQueryAppVersion:(NSString *)zipVersionNo andZipDownloadUrl:(NSString *)zipDownloadUrl;
+- (void)successOfQueryAppVersion:(nullable NSString *)zipVersionNo andZipDownloadUrl:(nullable NSString *)zipDownloadUrl;
 
 @optional
-- (void)failureOfLogin:(NSString *)msg;
+- (void)failureOfLogin:(nullable NSString *)msg;
 
 @optional
 - (void)downloadStart;
@@ -23,7 +23,7 @@
 - (void)downloadProgress:(double)progress;
 
 @optional
-- (void)downloadCompletion:(NSString *)version andFilePath:(NSString *)filePath;
+- (void)downloadCompletion:(nullable NSString *)version andFilePath:(nullable NSString *)filePath;
 
 
 @end
@@ -38,6 +38,6 @@
 
 
 /// 反地理编码，完成后上传位置点
-- (void)reverseGeo:(NSString *)cellphone andLon:(double)lon andLat:(double)lat;
+- (void)reverseGeo:(nullable NSString *)cellphone andLon:(double)lon andLat:(double)lat andWebView:(nullable UIWebView *)webView;
 
 @end

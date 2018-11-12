@@ -56,8 +56,13 @@
 + (void)showAlert:(UIView *)view andTitle:(NSString *)title;
 
 
-/// iOS9后坐标纠正
-+ (CLLocationCoordinate2D)wgs84ToGcj02:(CLLocationCoordinate2D)location;
+/**
+ 提示带时间参数
+ @param view  父窗口
+ @param title 标题
+ @param time  停留时间
+ */
++ (void)showAlert:(nullable UIView *)view andTitle:(nullable NSString *)title andTime:(NSTimeInterval)time;
 
 
 /// 设置上一次启动的版本号
@@ -65,10 +70,14 @@
 
 
 /// 获取上一次启动的版本号
-+ (NSString *)getLastVersion;
++ (nullable NSString *)getLastVersion;
 
 
 /// 获取当前版本号
-+ (NSString *)getCFBundleShortVersionString;
++ (nullable NSString *)getCFBundleShortVersionString;
+
+
+/// 检测位置权限
++ (void)skipLocationSettings;
 
 @end
