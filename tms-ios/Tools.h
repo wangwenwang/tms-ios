@@ -13,35 +13,35 @@
 @interface Tools : NSObject
 
 /// 获取zip版本号
-+ (NSString *)getZipVersion;
++ (nullable NSString *)getZipVersion;
 
 
 /// 设置zip版本号
-+ (void)setZipVersion:(NSString *)version;
++ (void)setZipVersion:(nullable NSString *)version;
 
 
 /// 获取服务器地址
-+ (NSString *)getServerAddress;
++ (nullable NSString *)getServerAddress;
 
 
 /// 设置服务器地址
-+ (void)setServerAddress:(NSString *)baseUrl;
++ (void)setServerAddress:(nullable NSString *)baseUrl;
 
 
 /// 版本号比较，1为服务器>本地，0为服务器=本地，-1为服务器<本地，-2为版本号不合法
-+ (int)compareVersion:(NSString *)server andLocati:(NSString *)locati;
++ (int)compareVersion:(nullable NSString *)server andLocati:(nullable NSString *)locati;
 
 
 /// 获取解压zip路径
-+ (NSString *)getUnzipPath;
++ (nullable NSString *)getUnzipPath;
 
 
 /// 关闭Webview编辑功能
-+ (void)closeWebviewEdit:(UIWebView *)_webView;
++ (void)closeWebviewEdit:(nullable UIWebView *)_webView;
 
 
 /// 打开Webview编辑功能
-+ (void)openWebviewEdit:(UIWebView *)_webView;
++ (void)openWebviewEdit:(nullable UIWebView *)_webView;
 
 
 /// 判断是否允许定位
@@ -53,7 +53,7 @@
 
 
 /// 提示  参数:View    NSString
-+ (void)showAlert:(UIView *)view andTitle:(NSString *)title;
++ (void)showAlert:(nullable UIView *)view andTitle:(nullable NSString *)title;
 
 
 /**
@@ -79,5 +79,17 @@
 
 /// 检测位置权限
 + (void)skipLocationSettings;
+
+
+/// 获取根控制器
++ (nullable UIViewController *)getRootViewController;
+
+
+/// 获取是否进入过主页（判断检查定位权限延迟，第一次进入延迟时长至10秒，否则延迟3秒）
++ (nullable NSString *)getEnterTheHomePage;
+
+
+/// 设置是否进入过主页（判断检查定位权限延迟，第一次进入延迟时长至10秒，否则延迟3秒）
++ (void)setEnterTheHomePage:(nullable NSString *)enter;
 
 @end

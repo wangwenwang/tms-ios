@@ -11,9 +11,6 @@
 @protocol ServiceToolsDelegate <NSObject>
 
 @optional
-- (void)successOfQueryAppVersion:(nullable NSString *)zipVersionNo andZipDownloadUrl:(nullable NSString *)zipDownloadUrl;
-
-@optional
 - (void)failureOfLogin:(nullable NSString *)msg;
 
 @optional
@@ -30,7 +27,7 @@
 
 @interface ServiceTools : NSObject
 
-@property (weak, nonatomic)id <ServiceToolsDelegate> delegate;
+@property (nullable, weak, nonatomic)id <ServiceToolsDelegate> delegate;
 
 
 /// 查询版本号

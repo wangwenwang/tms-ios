@@ -13,29 +13,29 @@
 
 @implementation Tools
 
-+ (NSString *)getZipVersion {
++ (nullable NSString *)getZipVersion {
     
     return [[NSUserDefaults standardUserDefaults] stringForKey:kUserDefaults_ZipVersion_local_key];
 }
 
-+ (void)setZipVersion:(NSString *)version {
++ (void)setZipVersion:(nullable NSString *)version {
     
     [[NSUserDefaults standardUserDefaults] setObject:version forKey:kUserDefaults_ZipVersion_local_key];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-+ (NSString *)getServerAddress {
++ (nullable NSString *)getServerAddress {
     
     return [[NSUserDefaults standardUserDefaults] stringForKey:kUserDefaults_Server_Address_key];
 }
 
-+ (void)setServerAddress:(NSString *)baseUrl {
++ (void)setServerAddress:(nullable NSString *)baseUrl {
     
     [[NSUserDefaults standardUserDefaults] setObject:baseUrl forKey:kUserDefaults_Server_Address_key];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
-+ (int)compareVersion:(NSString *)server andLocati:(NSString *)locati {
++ (int)compareVersion:(nullable NSString *)server andLocati:(nullable NSString *)locati {
     NSArray *servers = [server componentsSeparatedByString:@"."];
     NSArray *locatis = [locati componentsSeparatedByString:@"."];
     @try {
@@ -48,19 +48,19 @@
     }
 }
 
-+ (NSString *)getUnzipPath {
++ (nullable NSString *)getUnzipPath {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentpath = ([paths count] > 0) ? [paths objectAtIndex:0] : nil;
     NSString *unzipPath = [documentpath stringByAppendingPathComponent:@"/unzip"];
     return unzipPath;
 }
 
-+ (void)closeWebviewEdit:(UIWebView *)_webView {
++ (void)closeWebviewEdit:(nullable UIWebView *)_webView {
     [_webView stringByEvaluatingJavaScriptFromString:@"document.documentElement.style.webkitUserSelect='none';"];
     [_webView stringByEvaluatingJavaScriptFromString:@"document.documentElement.style.webkitTouchCallout='none';"];
 }
 
-+ (void)openWebviewEdit:(UIWebView *)_webView {
++ (void)openWebviewEdit:(nullable UIWebView *)_webView {
     [_webView stringByEvaluatingJavaScriptFromString:@"document.documentElement.style.webkitUserSelect='text';"];
     [_webView stringByEvaluatingJavaScriptFromString:@"document.documentElement.style.webkitTouchCallout='text';"];
 }
@@ -94,7 +94,7 @@
     return isExistenceNetwork;
 }
 
-+ (void)showAlert:(UIView *)view andTitle:(NSString *)title {
++ (void)showAlert:(nullable UIView *)view andTitle:(nullable NSString *)title {
     MBProgressHUD *hud = [MBProgressHUD showHUDAddedTo:view animated:YES];
     hud.mode = MBProgressHUDModeText;
     hud.label.text = title;
@@ -145,6 +145,25 @@
             [self showAlert:app.window andTitle:@"不支持iOS及以下设备"];
         }
     }];
+}
+
++ (nullable UIViewController *)getRootViewController {
+    
+    AppDelegate *app = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    UIViewController *rootViewController = app.window.rootViewController;
+    return rootViewController;
+}
+
++ (nullable NSString *)getEnterTheHomePage {
+    
+    return [[NSUserDefaults standardUserDefaults] stringForKey:kUserDefaults_EnterTheHomePage];
+}
+
+
++ (void)setEnterTheHomePage:(nullable NSString *)enter {
+    
+    [[NSUserDefaults standardUserDefaults] setObject:enter forKey:kUserDefaults_EnterTheHomePage];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 @end

@@ -20,12 +20,13 @@
 #import <BaiduMapAPI_Base/BMKGeneralDelegate.h>
 #import <BaiduMapAPI_Base/BMKMapManager.h>
 #import <notify.h>
+#import "ViewController.h"
 
 @interface AppDelegate ()<WXApiDelegate, ServiceToolsDelegate, BMKGeneralDelegate>{
     BMKMapManager * _mapManager;
 }
 
-@property (weak, nonatomic) UIWebView *webView;
+@property (strong, nonatomic) UIWebView *webView;
 
 @property (nonatomic, strong)LMProgressView *progressView;
 
@@ -50,13 +51,22 @@ static void updateEnabled(CFNotificationCenterRef center, void* observer, CFStri
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
+    // 接收webview
+    [self addNotification];
+    
+    self.window = [[UIWindow alloc]initWithFrame:[[UIScreen mainScreen] bounds]];
+    self.window.backgroundColor = [UIColor whiteColor];
+    ViewController *mainView = [[ViewController alloc] init];
+    _window.rootViewController = mainView;
+    [_window makeKeyAndVisible];
+    
     // 默认亮屏
     _displayStatus = @"1";
     CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, updateEnabled, CFSTR("com.apple.iokit.hid.displayStatus"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
 
     // 注册微信凭证
     [WXApi registerApp:WXAPPID];
-    
+
     // 百度地图
     _mapManager = [[BMKMapManager alloc] init];
     // 创云司机宝   TWj4fsDeV9hQpmwc8Fqp5A2h2TtCwVXX
@@ -67,9 +77,6 @@ static void updateEnabled(CFNotificationCenterRef center, void* observer, CFStri
     }else {
         NSLog(@"百度地图加载成功！");
     }
-    
-    // 接收webview
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveWebView:) name:kReceive_WebView_Notification object:nil];
     
     // 检查HTML zip 是否有更新
     [self checkZipVersion];
@@ -90,13 +97,11 @@ static void updateEnabled(CFNotificationCenterRef center, void* observer, CFStri
     
     ServiceTools *s = [[ServiceTools alloc] init];
     s.delegate = self;
-    [s queryAppVersion];
-}
-
-
-- (void)receiveWebView:(NSNotification *)aNotification {
-    
-    _webView = aNotification.userInfo[@"webView"];
+    UIViewController *rootViewController = _window.rootViewController;
+    if([rootViewController isKindOfClass:[ViewController class]]) {
+        
+        [s queryAppVersion];
+    }
 }
 
 
@@ -200,17 +205,13 @@ static void updateEnabled(CFNotificationCenterRef center, void* observer, CFStri
             
             NSString *params = [result toString];
             NSString *paramsEncoding = [params stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-            NSString *jsStr = [NSString stringWithFormat:@"WXBind_YES_Ajax('%@')", paramsEncoding];
-            NSLog(@"%@",jsStr);
-            [_webView stringByEvaluatingJavaScriptFromString:jsStr];
+            [IOSToVue TellVueWXBind_YES_Ajax:_webView andParamsEncoding:paramsEncoding];
             NSLog(@"请求tms用户信息成功");
         } else if(status == 3){
             
             if([data isKindOfClass:[NSString class]]) {
                 
-                NSString *jsStr = [NSString stringWithFormat:@"WXBind_NO_Ajax('%@')",openid];
-                NSLog(@"%@",jsStr);
-                [_webView stringByEvaluatingJavaScriptFromString:jsStr];
+                [IOSToVue TellVueWXBind_NO_Ajax:_webView andOpenid:openid];
                 NSLog(@"此微信未注册");
             }
         }else {
@@ -249,11 +250,6 @@ static void updateEnabled(CFNotificationCenterRef center, void* observer, CFStri
 
 #pragma mark - ServiceToolsDelegate
 
-- (void)successOfQueryAppVersion:(NSString *)zipVersionNo andZipDownloadUrl:(NSString *)zipDownloadUrl {
-    
-//    NSString *version = [Tools getZipVersion];
-}
-
 // 开始下载zip
 - (void)downloadStart {
     
@@ -282,16 +278,28 @@ static void updateEnabled(CFNotificationCenterRef center, void* observer, CFStri
     
     NSLog(@"解压中...");
     NSString *unzipPath = [Tools getUnzipPath];
-    [SSZipArchive unzipFileAtPath:filePath toDestination:unzipPath];
-    NSLog(@"解压完成，开始刷新APP内容...");
+    BOOL unzip_b = [SSZipArchive unzipFileAtPath:filePath toDestination:unzipPath];
+    if(unzip_b) {
+        
+        NSLog(@"解压完成，开始刷新APP内容...");
+    }else {
+        
+        NSLog(@"解压失败");
+    }
     
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         
+        NSLog(@"延迟0.5秒");
         usleep(500000);
         
         dispatch_async(dispatch_get_main_queue(), ^{
             
-            [_webView reload];
+            UIViewController *rootViewController = [Tools getRootViewController];
+            if([rootViewController isKindOfClass:[ViewController class]]) {
+                
+                ViewController *vc = (ViewController *)rootViewController;
+                [vc addWebView];
+            } 
             
             [UIView animateWithDuration:0.2 animations:^{
                 
@@ -323,6 +331,19 @@ static void updateEnabled(CFNotificationCenterRef center, void* observer, CFStri
     }else{
         NSLog(@"授权失败，错误代码：Error:%d", iError);
     }
+}
+
+
+#pragma mark - 通知
+
+- (void)addNotification {
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveWebView:) name:kReceive_WebView_Notification object:nil];
+}
+
+- (void)receiveWebView:(NSNotification *)aNotification {
+    
+    _webView = aNotification.userInfo[@"webView"];
 }
 
 @end

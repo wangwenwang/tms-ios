@@ -36,7 +36,7 @@
  */
 - (void)getOrderLocaltions:(NSString *)idx {
     
-    __weak typeof(self)wkSelf = self;
+    __weak __typeof(self)weakSelf = self;
     
     NSString *url = [NSString stringWithFormat:@"%@%@", [Tools getServerAddress], @"getPathData.do"];
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
@@ -57,7 +57,7 @@
                 [location setDict:arrResult[i]];
                 location.CORDINATEY = [arrResult[i][@"lat"] doubleValue];
                 location.CORDINATEX = [arrResult[i][@"lon"] doubleValue];
-                [wkSelf.orderLocations addObject:location];
+                [weakSelf.orderLocations addObject:location];
                 NSLog(@"%@", location);
             }
             if([_delegate respondsToSelector:@selector(success)]) {

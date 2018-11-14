@@ -31,12 +31,15 @@
 
 #define kUserDefaults_ZipVersion_local_key @"ZipVersion"
 
-#define kUserDefaults_ZipVersion_local_defaultValue @"0.0.2"
+#define kUserDefaults_ZipVersion_local_defaultValue @"0.0.3"
 
 #define kUserDefaults_Server_Address_key @"ServerAddress"
 
 // 记住上一次版本号，解决版本更新时沙盒内容不清空问题
 #define kUserDefaults_Last_Version_key @"LastVersion"
+
+// 是否进入过主页（如果第一次进入，延长检查定位权限时间）
+#define kUserDefaults_EnterTheHomePage @"EnterTheHomePage"
 
 
 /*--------- 屏幕尺寸 ---------*/
@@ -63,6 +66,18 @@
 
 // 解锁通知
 #define NotificationOn CFSTR("com.apple.springboard.hasBlankedScreen")
+
+
+// 状态栏高度
+#define kStatusHeight  [[UIApplication sharedApplication] statusBarFrame].size.height
+
+
+// 导航栏高度
+#define kNavHeight  self.navigationController.navigationBar.frame.size.height
+
+
+// 底部宏
+#define SafeAreaBottomHeight (ScreenHeight == 812.0 ? 34 : 0)
 
 
 // 微信AppID

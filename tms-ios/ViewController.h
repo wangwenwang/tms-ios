@@ -7,13 +7,21 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <ZipArchive.h>
+#import <WXApi.h>
+#import <JavaScriptCore/JavaScriptCore.h>
+#import "Tools.h"
+#import <MapKit/MapKit.h>
+#import "ServiceTools.h"
+#import "AppDelegate.h"
+#import "CheckOrderPathViewController.h"
+#import "IOSToVue.h"
 
 @interface ViewController : UIViewController
 
-@property (weak, nonatomic) IBOutlet UIWebView *webView;
+@property (strong, nonatomic) UIWebView *webView;
 
-// 计时器，固定间隔时间上传位置信息
-@property (strong, nonatomic) NSTimer *localTimer;
+- (void)addWebView;
 
 @end
 

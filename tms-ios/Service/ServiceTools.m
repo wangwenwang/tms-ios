@@ -12,10 +12,13 @@
 #import "AppDelegate.h"
 #import "NSString+toDict.h"
 #import "IOSToVue.h"
+#import "ViewController.h"
 
 @interface ServiceTools()
 
 @property (strong, nonatomic) AppDelegate *app;
+
+@property (strong, nonatomic) UIWebView *webview;
 
 @end;
 
@@ -62,7 +65,15 @@
                         NSString *currZipVersion = [Tools getZipVersion];
                         int c = [Tools compareVersion:server_zipVersion andLocati:currZipVersion];
                         if(c == 1) {
-                            
+                        
+                            // 设置 webView 为 nil，解决UIWebview调用reload导致JSContext失效的问题
+                            UIViewController *rootViewController = [Tools getRootViewController];
+                            if([rootViewController isKindOfClass:[ViewController class]]) {
+                                
+                                ViewController *vc = (ViewController *)rootViewController;
+                                [vc.webView removeFromSuperview];
+                                vc.webView = nil;
+                            }
                             NSString *server_zipDownloadUrl = dict[@"zipDownloadUrl"];
                             NSLog(@"更新zip...");
                             
@@ -179,7 +190,13 @@
         resultS = [resultS substringToIndex:(resultS.length - 1)];
         NSDictionary *resultD = [resultS toDict];
         NSString *address = resultD[@"result"][@"formatted_address"];
-//        [IOSToVue TellVueCurrAddress:webView andAddress:address];
+        
+        // 不让苹果审核小组看到导航按钮
+        if ([address rangeOfString:@"Ellis Street"].location != NSNotFound ||
+            [address rangeOfString:@"香港"].location != NSNotFound) {
+            
+            [IOSToVue TellVueHiddenNav:webView];
+        }
         [self timingTracking:cellphone andLon:lon andLat:lat andVehicleLocation:address];
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {

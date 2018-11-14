@@ -7,19 +7,8 @@
 //
 
 #import "ViewController.h"
-#import <ZipArchive.h>
-#import <WXApi.h>
-#import <JavaScriptCore/JavaScriptCore.h>
-#import "Tools.h"
-#import <MapKit/MapKit.h>
-#import "ServiceTools.h"
-#import "AppDelegate.h"
-#import "CheckOrderPathViewController.h"
-#import "IOSToVue.h"
 
 @interface ViewController ()<UIGestureRecognizerDelegate, UIWebViewDelegate, BMKLocationServiceDelegate, ServiceToolsDelegate, CLLocationManagerDelegate> {
-    
-    NSURLRequest *_request;
     
     // 百度地图定位服务
     BMKLocationService *_locationService;
@@ -30,6 +19,9 @@
     // 第一次上传位置
     BOOL _firstLoc;
 }
+
+// 计时器，固定间隔时间上传位置信息
+@property (strong, nonatomic) NSTimer *localTimer;
 
 // 网络层
 @property (strong, nonatomic) ServiceTools *service;
@@ -49,108 +41,54 @@
 @implementation ViewController
 
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
     
+    [self addWebView];
     
-    if ([[_webView subviews] count] > 0) {
-        // hide the shadows
-        for (UIView* shadowView in [[[_webView subviews] objectAtIndex:0] subviews]) {
-            [shadowView setHidden:YES];
-        }
-        // show the content
-        [[[[[_webView subviews] objectAtIndex:0] subviews] lastObject] setHidden:NO];
-    }
-    _webView.backgroundColor = [UIColor whiteColor];
-    for (UIView *subView in [_webView subviews]) {
+    UIImageView *imageV = [[UIImageView alloc] init];
+    
+    NSLog(@"ScreenHeight:%f", ScreenHeight);
+    NSString *imageName = @"";
+    
+    if(ScreenHeight == 480) {
         
-        if ([subView isKindOfClass:[UIScrollView class]]) {
-            
-            for (UIView *shadowView in [subView subviews]) {
-                
-                if ([shadowView isKindOfClass:[UIImageView class]]) {
-                    
-                    shadowView.hidden = YES;
-                }
-            }
-        }
-    }
-    _webView.opaque=NO;
-    _webView.backgroundColor=[UIColor clearColor];
-    
-    UIScrollView *scroller = [_webView.subviews objectAtIndex:0];
-    
-    //去掉webview 上下只阴影部分
-    _webView .opaque = NO;
-    for (UIView *subView in [scroller subviews]) {
+        // iPhone4S
+        imageName = @"640 × 960";
+    }else if(ScreenHeight == 568){
         
-        if ([[[subView class] description] isEqualToString:@"UIImageView"]) {
-            
-            subView.hidden = YES;
-        }
-    }
-    _webView.backgroundColor=[UIColor clearColor];
-    
-    
-    // 初始化信息
-    _app = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    _allowUpdate = YES;
-    
-    // 长按5秒，开启webview编辑模式
-    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(longPress:)];
-    longPress.delegate = self;
-    longPress.minimumPressDuration = 5;
-    [_webView addGestureRecognizer:longPress];
-    
-    
-    NSString *unzipPath = [Tools getUnzipPath];
-    NSLog(@"unzipPath:%@", unzipPath);
-    
-    NSString *checkFilePath = [unzipPath  stringByAppendingPathComponent:@"dist/index.html"];
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    
-    if ([fileManager fileExistsAtPath:checkFilePath] && [[Tools getLastVersion] isEqualToString:[Tools getCFBundleShortVersionString]]) {
+        // iPhone5S、iPhoneSE
+        imageName = @"640 × 1136";
+    }else if(ScreenHeight == 667){
         
-        NSLog(@"HTML已存在，无需解压");
-    } else {
+        // iPhone6、iPhone6S、iPhone7、iPhone8
+        imageName = @"750 × 1334";
+    }else if(ScreenHeight == 736){
         
-        NSLog(@"第一次加载，或版本有更新，解压");
-        NSString *zipPath = [[NSBundle mainBundle] pathForResource:@"dist" ofType:@"zip"];
-        NSLog(@"zipPath:%@", zipPath);
-        [SSZipArchive unzipFileAtPath:zipPath toDestination:unzipPath];
-    }
-    [Tools setLastVersion];
-    
-    // 加载URL
-    NSString *filePath = [NSString stringWithFormat:@"%@/dist/%@", unzipPath, @"index.html"];
-    NSURL *url = [[NSURL alloc] initWithString:filePath];
-    [_webView loadRequest:[NSURLRequest requestWithURL:url]];
-    _request = [NSURLRequest requestWithURL:url];
-    
-    _webView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
-    [[NSNotificationCenter defaultCenter] postNotificationName:kReceive_WebView_Notification object:nil userInfo:@{@"webView":_webView}];
-    
-    // 禁用弹簧效果
-    for (id subview in _webView.subviews){
-        if ([[subview class] isSubclassOfClass: [UIScrollView class]]) {
-            ((UIScrollView *)subview).bounces = NO;
-        }
+        // iPhone6P、iPhone6SP、iPhone7P、iPhone8P
+        imageName = @"1242 × 2208";
+    }else if(ScreenHeight == 812){
+        
+        // iPhoneX、iPhoneXS
+        imageName = @"1125 × 2436";
+    }else {
+        
+        // iPhoneXR、iPhoneXSMAX
+        imageName = @"1125 × 2436";
+        [Tools showAlert:self.view andTitle:@"未知设备" andTime:5];
     }
     
+    [imageV setImage:[UIImage imageNamed:imageName]];
+    [imageV setFrame:CGRectMake(0, 0, ScreenWidth, ScreenHeight)];
+    [self.view addSubview:imageV];
     
-    // 取消右侧，下侧滚动条，去处上下滚动边界的黑色背景
-    for (UIView *_aView in [_webView subviews]) {
-        if ([_aView isKindOfClass:[UIScrollView class]]) {
-            [(UIScrollView *)_aView setShowsVerticalScrollIndicator:NO];
-            //右侧的滚动条
-            [(UIScrollView *)_aView setShowsHorizontalScrollIndicator:NO];
-            //下侧的滚动条
-            for (UIView *_inScrollview in _aView.subviews) {
-                if ([_inScrollview isKindOfClass:[UIImageView class]]) {
-                    _inScrollview.hidden = YES;  //上下滚动出边界时的黑色的图片
-                }
-            }
-        }
-    }
+    [UIView animateWithDuration:0.8 delay:0.8 options:0 animations:^{
+        
+        [imageV setAlpha:0];
+    } completion:^(BOOL finished) {
+        
+        [imageV removeFromSuperview];
+    }];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -173,8 +111,6 @@
 
 // webViewDidFinishLoad方法晚于vue的mounted函数 0.3秒左右，不采用
 - (void)webViewDidStartLoad:(UIWebView *)webView{
-    
-    NSLog(@"------webViewDidStartLoad");
     
     // iOS监听vue的函数
     JSContext *context = [self.webView valueForKeyPath:@"documentView.webView.mainFrame.javaScriptContext"];
@@ -214,24 +150,22 @@
             if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"weixin://"]] || [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"Whatapp://"]] || [WXApi isWXAppInstalled]) {
                 
                 // 微信
-                NSLog(@"YESWX");
+                NSLog(@"设备已安装【微信】");
             }else {
                 
                 // 移除微信按钮
-                NSString *jsStr = [NSString stringWithFormat:@"WXInstall_Check_Ajax('%@')", @"NO"];
-                NSLog(@"%@",jsStr);
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    [_webView stringByEvaluatingJavaScriptFromString:jsStr];
-                });
+                [IOSToVue TellVueWXInstall_Check_Ajax:_webView andIsInstall:@"NO"];
             }
             
-            NSString *jsStrVersion = [NSString stringWithFormat:@"VersionShow('版本:%@')", [Tools getCFBundleShortVersionString]];
-            NSLog(@"%@",jsStrVersion);
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [_webView stringByEvaluatingJavaScriptFromString:jsStrVersion];
-            });
+            // 发送APP版本号
+            [IOSToVue TellVueVersionShow:_webView andVersion:[NSString stringWithFormat:@"版本:%@", [Tools getCFBundleShortVersionString]]];
             
+            // 发送设备标识
             [IOSToVue TellVueDevice:_webView andDevice:@"iOS"];
+            
+            // 停止定位功能、销毁定时器
+            [_localTimer invalidate];
+            [_locationService stopUserLocationService];
         }
         // 导航
         else if([first isEqualToString:@"导航"]) {
@@ -264,13 +198,21 @@
                 
                 _PositioningDelay = 0;
             } else {
+                
                 _PositioningDelay = 1;
             }
             
             // 判断定位权限  延迟检查，因为用户首次选择需要时间
             dispatch_async(dispatch_get_global_queue(0, 0), ^{
                 
-                sleep(7);
+                NSString *enter = [Tools getEnterTheHomePage];
+                if([enter isEqualToString:@"YES"]) {
+                    sleep(3);
+                }else {
+                    sleep(10);
+                }
+                [Tools setEnterTheHomePage:@"YES"];
+                
                 dispatch_async(dispatch_get_main_queue(), ^{
                     
                     if([Tools isLocationServiceOpen]) {
@@ -402,6 +344,75 @@
     }
     
     [self presentViewController:alert animated:YES completion:nil];
+}
+
+
+#pragma mark GET方法
+- (void)addWebView {
+    
+    if(_webView == nil) {
+        
+        _webView = [[UIWebView alloc] init];
+        [_webView setFrame:CGRectMake(0, kStatusHeight, ScreenWidth, ScreenHeight - kStatusHeight - SafeAreaBottomHeight)];
+        _webView.delegate = self;
+        [self.view addSubview:_webView];
+        
+        // 初始化信息
+        _app = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+        _allowUpdate = YES;
+        
+        // 长按5秒，开启webview编辑模式
+        UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(longPress:)];
+        longPress.delegate = self;
+        longPress.minimumPressDuration = 5;
+        [_webView addGestureRecognizer:longPress];
+        
+        NSString *unzipPath = [Tools getUnzipPath];
+        NSLog(@"unzipPath:%@", unzipPath);
+        
+        NSString *checkFilePath = [unzipPath  stringByAppendingPathComponent:@"dist/index.html"];
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        
+        if ([fileManager fileExistsAtPath:checkFilePath] && [[Tools getLastVersion] isEqualToString:[Tools getCFBundleShortVersionString]]) {
+            
+            NSLog(@"HTML已存在，无需解压");
+        } else {
+            
+            NSLog(@"第一次加载，或版本有更新，解压");
+            NSString *zipPath = [[NSBundle mainBundle] pathForResource:@"dist" ofType:@"zip"];
+            NSLog(@"zipPath:%@", zipPath);
+            [SSZipArchive unzipFileAtPath:zipPath toDestination:unzipPath];
+        }
+        [Tools setLastVersion];
+        
+        // 加载URL
+        NSString *filePath = [NSString stringWithFormat:@"%@/dist/%@", unzipPath, @"index.html"];
+        NSURL *url = [[NSURL alloc] initWithString:filePath];
+        
+        [_webView loadRequest:[NSURLRequest requestWithURL:url]];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:kReceive_WebView_Notification object:nil userInfo:@{@"webView":_webView}];
+        // 禁用弹簧效果
+        for (id subview in _webView.subviews){
+            if ([[subview class] isSubclassOfClass: [UIScrollView class]]) {
+                ((UIScrollView *)subview).bounces = NO;
+            }
+        }
+        // 取消右侧，下侧滚动条，去处上下滚动边界的黑色背景
+        for (UIView *_aView in [_webView subviews]) {
+            if ([_aView isKindOfClass:[UIScrollView class]]) {
+                [(UIScrollView *)_aView setShowsVerticalScrollIndicator:NO];
+                // 右侧的滚动条
+                [(UIScrollView *)_aView setShowsHorizontalScrollIndicator:NO];
+                // 下侧的滚动条
+                for (UIView *_inScrollview in _aView.subviews) {
+                    if ([_inScrollview isKindOfClass:[UIImageView class]]) {
+                        _inScrollview.hidden = YES;  // 上下滚动出边界时的黑色的图片
+                    }
+                }
+            }
+        }
+    }
 }
 
 

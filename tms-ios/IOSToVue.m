@@ -10,20 +10,49 @@
 
 @implementation IOSToVue
 
-+ (void)TellVueCurrAddress:(nullable UIWebView *)webView andAddress:(nullable NSString *)address {
++ (void)TellVueMsg:(nullable UIWebView *)webView andJsStr:(nullable NSString *)jsStr {
     
-    NSString *jsStr = [NSString stringWithFormat:@"HiddenNav('%@')",address];
     NSLog(@"%@",jsStr);
-    [webView stringByEvaluatingJavaScriptFromString:jsStr];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        
+        [webView stringByEvaluatingJavaScriptFromString:jsStr];
+    });
+}
+
++ (void)TellVueHiddenNav:(nullable UIWebView *)webView {
+    
+    NSString *jsStr = [NSString stringWithFormat:@"HiddenNav('')"];
+    [IOSToVue TellVueMsg:webView andJsStr:jsStr];
 }
 
 + (void)TellVueDevice:(nullable UIWebView *)webView andDevice:(nullable NSString *)dev {
     
     NSString *jsStr = [NSString stringWithFormat:@"Device_Ajax('%@')",dev];
-    NSLog(@"%@",jsStr);
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [webView stringByEvaluatingJavaScriptFromString:jsStr];
-    });
+    [IOSToVue TellVueMsg:webView andJsStr:jsStr];
+}
+
++ (void)TellVueWXBind_YES_Ajax:(nullable UIWebView *)webView andParamsEncoding:(nullable NSString *)paramsEncoding {
+    
+    NSString *jsStr = [NSString stringWithFormat:@"WXBind_YES_Ajax('%@')",paramsEncoding];
+    [IOSToVue TellVueMsg:webView andJsStr:jsStr];
+}
+
++ (void)TellVueWXBind_NO_Ajax:(nullable UIWebView *)webView andOpenid:(nullable NSString *)openid {
+    
+    NSString *jsStr = [NSString stringWithFormat:@"WXBind_NO_Ajax('%@')",openid];
+    [IOSToVue TellVueMsg:webView andJsStr:jsStr];
+}
+
++ (void)TellVueWXInstall_Check_Ajax:(nullable UIWebView *)webView andIsInstall:(nullable NSString *)isInstall {
+    
+    NSString *jsStr = [NSString stringWithFormat:@"WXInstall_Check_Ajax('%@')",isInstall];
+    [IOSToVue TellVueMsg:webView andJsStr:jsStr];
+}
+
++ (void)TellVueVersionShow:(nullable UIWebView *)webView andVersion:(nullable NSString *)version {
+    
+    NSString *jsStr = [NSString stringWithFormat:@"VersionShow('%@')",version];
+    [IOSToVue TellVueMsg:webView andJsStr:jsStr];
 }
 
 @end
