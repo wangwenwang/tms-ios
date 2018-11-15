@@ -14,7 +14,7 @@
 		3B208794219536A6000C36A9 /* CheckOrderPathViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3B2087872195296B000C36A9 /* CheckOrderPathViewController.xib */; };
 		3B20879E21958D1D000C36A9 /* IOSToVue.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B20879D21958D1D000C36A9 /* IOSToVue.m */; };
 		3B48D01B219BAF4600006BDF /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3B48D01A219BAF4600006BDF /* Launch Screen.storyboard */; };
-		3B48D09C219C105100006BDF /* dist.zip in Resources */ = {isa = PBXBuildFile; fileRef = 3B48D09B219C104300006BDF /* dist.zip */; };
+		3B631A42219D435000081560 /* dist.zip in Resources */ = {isa = PBXBuildFile; fileRef = 3B631A41219D434B00081560 /* dist.zip */; };
 		3B6A4759216B7C430062908E /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6A4758216B7BE40062908E /* Reachability.m */; };
 		3B6A761E218025FC00C55026 /* LM_alert.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6A761D2180259D00C55026 /* LM_alert.m */; };
 		3B6A761F2180260300C55026 /* NSArray+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6A475E216C85210062908E /* NSArray+Extension.m */; };
@@ -68,7 +68,7 @@
 		3B20879D21958D1D000C36A9 /* IOSToVue.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IOSToVue.m; sourceTree = "<group>"; };
 		3B48D01A219BAF4600006BDF /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		3B48D098219BEEE400006BDF /* Default-568@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568@2x.png"; sourceTree = "<group>"; };
-		3B48D09B219C104300006BDF /* dist.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = dist.zip; sourceTree = "<group>"; };
+		3B631A41219D434B00081560 /* dist.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = dist.zip; sourceTree = "<group>"; };
 		3B6A4757216B7BE40062908E /* Reachability.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		3B6A4758216B7BE40062908E /* Reachability.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		3B6A475D216C85210062908E /* NSArray+Extension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSArray+Extension.h"; sourceTree = "<group>"; };
@@ -212,7 +212,7 @@
 		3BD7CA472145F54000DFF16F /* tms-ios */ = {
 			isa = PBXGroup;
 			children = (
-				3B48D09B219C104300006BDF /* dist.zip */,
+				3B631A41219D434B00081560 /* dist.zip */,
 				3B48D098219BEEE400006BDF /* Default-568@2x.png */,
 				3B6A475C216C85210062908E /* Category */,
 				3B6A761B2180259D00C55026 /* Custum */,
@@ -415,7 +415,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3B48D09C219C105100006BDF /* dist.zip in Resources */,
+				3B631A42219D435000081560 /* dist.zip in Resources */,
 				3B208794219536A6000C36A9 /* CheckOrderPathViewController.xib in Resources */,
 				3B48D01B219BAF4600006BDF /* Launch Screen.storyboard in Resources */,
 				3BD7CA522145F54000DFF16F /* Assets.xcassets in Resources */,
