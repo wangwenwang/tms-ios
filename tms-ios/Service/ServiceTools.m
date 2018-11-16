@@ -113,6 +113,22 @@
     NSURL *URL = [NSURL URLWithString:urlStr];
     NSURLRequest *request = [NSURLRequest requestWithURL:URL];
     
+    //需要删除文件的物理地址
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory , NSUserDomainMask, YES);
+    NSString *path = [NSString stringWithFormat:@"%@/dist.zip", paths.firstObject];
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    BOOL isDelete = [fileManager removeItemAtPath:path error:nil];
+    if (isDelete) {
+        
+        // 删除文件成功
+        NSLog(@"删除文件成功");
+    }else{
+       
+        // 删除文件失败
+        NSLog(@"删除文件失败");
+    }
+    
+    
     NSURLSessionDownloadTask *downloadTask = [manager downloadTaskWithRequest:request progress:^(NSProgress * _Nonnull downloadProgress) {
         
         if([_delegate respondsToSelector:@selector(downloadProgress:)]) {
@@ -197,7 +213,11 @@
             
             [IOSToVue TellVueHiddenNav:webView];
         }
-        [self timingTracking:cellphone andLon:lon andLat:lat andVehicleLocation:address];
+        // 地址不能为 nil，也不能为空
+        if(address != nil && ![address isEqualToString:@""]) {
+            
+            [self timingTracking:cellphone andLon:lon andLat:lat andVehicleLocation:address];
+        }
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         

@@ -307,8 +307,14 @@ static void updateEnabled(CFNotificationCenterRef center, void* observer, CFStri
             }completion:^(BOOL finished){
                 
                 [_downView removeFromSuperview];
+                if(unzip_b) {
+                    
+                    [Tools setZipVersion:version];
+                }else {
+                    
+                    NSLog(@"zip解压失败，不更新zip版本号");
+                }
             }];
-            [Tools setZipVersion:version];
             NSLog(@"刷新内容完成");
         });
     });
