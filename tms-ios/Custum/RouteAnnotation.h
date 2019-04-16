@@ -12,4 +12,7 @@
 
 @property (assign, nonatomic) int degree;
 
+/// 地址
+@property (copy, nonatomic) NSString *address;
+
 @end

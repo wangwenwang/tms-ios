@@ -31,7 +31,7 @@
 
 #define kUserDefaults_ZipVersion_local_key @"ZipVersion"
 
-#define kUserDefaults_ZipVersion_local_defaultValue @"0.0.8"
+#define kUserDefaults_ZipVersion_local_defaultValue @"0.3.2"
 
 #define kUserDefaults_Server_Address_key @"ServerAddress"
 
@@ -86,3 +86,11 @@
 
 // 微信AppSecret
 #define WXAPPSECRED @"2acb3abc7ecdb074960ac039742d60fe"
+
+
+// 反地理编码函数，上传位置点
+#define GeoOfTimingTracking @"GeoOfTimingTracking"
+
+
+// 反地理编码函数，把位置告诉Vue
+#define GeoOfTellVue @"GeoOfTellVue"

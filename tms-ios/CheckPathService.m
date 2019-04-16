@@ -50,6 +50,7 @@
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSLog(@"请求成功---%@", responseObject);
         int States = [responseObject[@"States"] intValue];
+        NSLog(@"----------%d", States);
         if(States == 1) {
             NSArray *arrResult = responseObject[@"pathData"];
             for (int i = 0; i < arrResult.count; i++) {

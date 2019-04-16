@@ -55,4 +55,10 @@
     [IOSToVue TellVueMsg:webView andJsStr:jsStr];
 }
 
++ (void)TellVueCurrAddress:(nullable UIWebView *)webView andAddress:(nullable NSString *)address andLon:(float)lon andLat:(float)lat {
+    
+    NSString *jsStr = [NSString stringWithFormat:@"SetCurrAddress('%@','%f','%f')", address, lon, lat];
+    [IOSToVue TellVueMsg:webView andJsStr:jsStr];
+}
+
 @end

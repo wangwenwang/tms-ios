@@ -18,5 +18,8 @@
 
 @property (strong, nonatomic) NSString *app_version;
 
+// 最近一次位置（不记录地址，因为地址是反地理编码出来的，编码频率10分钟/次）
+@property (assign, nonatomic) CLLocationCoordinate2D currLatlng;
+
 @end
 

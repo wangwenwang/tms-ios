@@ -250,6 +250,11 @@
             }
             _service.delegate = self;
         }
+        // 获取当前位置页面已加载，预留接口，防止js获取当前位置出问题
+        else if([first isEqualToString:@"获取当前位置页面已加载"]) {
+            
+            [_service reverseGeo:_app.cellphone andLon:_location.longitude andLat:_location.latitude andWebView:_webView andTimingTrackingOrTellVue:GeoOfTellVue];
+        }
         NSLog(@"js传ios：%@   %@   %@",first, second, third);
     };
 }
@@ -364,7 +369,7 @@
         // 长按5秒，开启webview编辑模式
         UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc]initWithTarget:self action:@selector(longPress:)];
         longPress.delegate = self;
-        longPress.minimumPressDuration = 5;
+        longPress.minimumPressDuration = 3;
         [_webView addGestureRecognizer:longPress];
         
         NSString *unzipPath = [Tools getUnzipPath];
@@ -462,7 +467,7 @@
         //判断连接状态
         if([Tools isConnectionAvailable]) {
             
-            [_service reverseGeo:_app.cellphone andLon:_location.longitude andLat:_location.latitude andWebView:_webView];
+            [_service reverseGeo:_app.cellphone andLon:_location.longitude andLat:_location.latitude andWebView:_webView andTimingTrackingOrTellVue:GeoOfTimingTracking];
         }
     }
 }
@@ -482,11 +487,12 @@
 - (void)didUpdateBMKUserLocation:(BMKUserLocation *)userLocation {
     
     _location = userLocation.location.coordinate;
-    NSLog(@"位置：%f   %f", _location.longitude, _location.latitude);
+    _app.currLatlng = userLocation.location.coordinate;
+    NSLog(@"位置：%f   %f  ", _location.longitude, _location.latitude);
     
     if(_firstLoc) {
         
-        [_service reverseGeo:_app.cellphone andLon:_location.longitude andLat:_location.latitude andWebView:_webView];
+        [_service reverseGeo:_app.cellphone andLon:_location.longitude andLat:_location.latitude andWebView:_webView andTimingTrackingOrTellVue:GeoOfTimingTracking];
         _firstLoc = NO;
     }
 }

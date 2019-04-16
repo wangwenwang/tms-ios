@@ -34,7 +34,7 @@
 - (void)queryAppVersion;
 
 
-/// 反地理编码，完成后上传位置点
-- (void)reverseGeo:(nullable NSString *)cellphone andLon:(double)lon andLat:(double)lat andWebView:(nullable UIWebView *)webView;
+/// 反地理编码，完成后上传位置点，或告诉Vue
+- (void)reverseGeo:(nullable NSString *)cellphone andLon:(double)lon andLat:(double)lat andWebView:(nullable UIWebView *)webView andTimingTrackingOrTellVue:(nullable NSString *)ttOrtv;
 
 @end

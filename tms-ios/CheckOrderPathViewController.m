@@ -108,6 +108,8 @@
     }else {
         [Tools showAlert:self.view andTitle:@"网络连接不可用!"];
     }
+    _mapViwe.showMapScaleBar = YES;
+    _mapViwe.mapScaleBarPosition = CGPointMake(13, _mapViwe.frame.size.height - 95); //比例尺的位置
 }
 
 /**
@@ -165,6 +167,15 @@
             
             // 轨迹点总数累计
             planPointCounts = transitStep.pointsCount + planPointCounts;
+        }
+        
+        // 司机上传的位置点
+        [self addShopAnnotation];
+        
+        if(_service.orderLocations.count > 1) {
+            if(_service.orderLocations.count > 0) {
+                [self addStartAndEndPointMark:_service.orderLocations[0] andEnd:_service.orderLocations[_service.orderLocations.count - 1]];
+            }
         }
         
         // 轨迹点
@@ -344,6 +355,14 @@
     if(image != nil) {
         view.image = image;
     }
+    
+    if(routeAnnotation.type == 6) {
+        view.image = [UIImage imageNamed:@"LM_Map_Start"];
+    }else if(routeAnnotation.type == 7) {
+        view.image = [UIImage imageNamed:@"LM_Map_Way"];
+    }else if(routeAnnotation.type == 8) {
+        view.image = [UIImage imageNamed:@"LM_Map_End"];
+    }
     return view;
 }
 
@@ -358,13 +377,13 @@
     RouteAnnotation *startItem = [[RouteAnnotation alloc] init];
     startItem.coordinate = CLLocationCoordinate2DMake(start.CORDINATEY, start.CORDINATEX);
     startItem.title = @"起点";
-    startItem.type = 0;
+    startItem.type = 6;
     [_mapViwe addAnnotation:startItem];  // 添加起点标注
     
     RouteAnnotation *endItem = [[RouteAnnotation alloc] init];
     endItem.coordinate = CLLocationCoordinate2DMake(end.CORDINATEY, end.CORDINATEX);
     endItem.title = @"终点";
-    endItem.type = 1;
+    endItem.type = 8;
     [_mapViwe addAnnotation:endItem];  // 添加终点标注
 }
 
@@ -477,14 +496,14 @@
 - (void)success {
     NSMutableArray *points = _service.orderLocations;
     
-    if(points.count > 2) {
-        if(points.count > 0) {
-            [self addStartAndEndPointMark:points[0] andEnd:points[points.count - 1]];
-        }
+    if(points.count > 3) {
+//        if(points.count > 0) {
+//            [self addStartAndEndPointMark:points[0] andEnd:points[points.count - 1]];
+//        }
         [self searchDrivingPath];
     } else {
         
-        [Tools showAlert:self.view andTitle:[NSString stringWithFormat:@"定位点个数为%ld,小于3个点不能规划线路",(long)points.count] andTime:2.5];
+        [Tools showAlert:self.view andTitle:[NSString stringWithFormat:@"定位点个数为%ld,小于4个点不能规划线路",(long)points.count] andTime:2.5];
     }
 }
 
@@ -492,6 +511,21 @@
     [Tools showAlert:self.view andTitle:msg ? msg : @"获取线路失败"];
 }
 
+#pragma mark - 功能函数
 
+- (void)addShopAnnotation {
+    
+    for (LocationModel *latlng in _service.orderLocations) {
+        
+        RouteAnnotation *item = [[RouteAnnotation alloc] init];
+        item = [[RouteAnnotation alloc] init];
+        item.coordinate = CLLocationCoordinate2DMake(latlng.CORDINATEY, latlng.CORDINATEX);
+        item.title = latlng.INSERT_DATE;
+        item.type = 7;
+        item.address = latlng.ADDRESS;
+        item.subtitle = latlng.ADDRESS;
+        [_mapViwe addAnnotation:item];
+    }
+}
 
 @end

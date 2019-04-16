@@ -33,4 +33,8 @@
 /// 告诉Vue版本号
 + (void)TellVueVersionShow:(nullable UIWebView *)webView andVersion:(nullable NSString *)version;
 
+
+/// 告诉Vue当前地址
++ (void)TellVueCurrAddress:(nullable UIWebView *)webView andAddress:(nullable NSString *)address andLon:(float)lon andLat:(float)lat;
+
 @end

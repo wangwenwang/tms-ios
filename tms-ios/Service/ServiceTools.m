@@ -190,7 +190,7 @@
     }];
 }
 
-- (void)reverseGeo:(NSString *)cellphone andLon:(double)lon andLat:(double)lat andWebView:(nullable UIWebView *)webView{
+- (void)reverseGeo:(nullable NSString *)cellphone andLon:(double)lon andLat:(double)lat andWebView:(nullable UIWebView *)webView andTimingTrackingOrTellVue:(nullable NSString *)ttOrtv {
     
     NSString *url = [NSString stringWithFormat:@"http://api.map.baidu.com/geocoder/v2/?callback=renderReverse&location=%f,%f&output=json&pois=1&ak=TWj4fsDeV9hQpmwc8Fqp5A2h2TtCwVXX&mcode=com.kaidongyuan.tms", lat, lon];
     
@@ -216,7 +216,13 @@
         // 地址不能为 nil，也不能为空
         if(address != nil && ![address isEqualToString:@""]) {
             
-            [self timingTracking:cellphone andLon:lon andLat:lat andVehicleLocation:address];
+            if([ttOrtv isEqualToString:GeoOfTimingTracking]) {
+                
+                [self timingTracking:cellphone andLon:lon andLat:lat andVehicleLocation:address];
+            }else if([ttOrtv isEqualToString:GeoOfTellVue]) {
+                
+                [IOSToVue TellVueCurrAddress:webView andAddress:address andLon:_app.currLatlng.longitude andLat:_app.currLatlng.latitude];
+            }
         }
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
