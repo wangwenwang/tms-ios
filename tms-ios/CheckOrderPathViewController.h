@@ -13,4 +13,10 @@
 /// 用户的 idx
 @property (copy, nonatomic) NSString *orderIDX;
 
+/// 配载单号
+@property (copy, nonatomic) NSString *shipmentCode;
+
+/// 配载状态 在途、交付
+@property (copy, nonatomic) NSString *shipmentStatus;
+
 @end

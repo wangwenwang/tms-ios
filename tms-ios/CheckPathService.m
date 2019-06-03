@@ -50,7 +50,6 @@
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         NSLog(@"请求成功---%@", responseObject);
         int States = [responseObject[@"States"] intValue];
-        NSLog(@"----------%d", States);
         if(States == 1) {
             NSArray *arrResult = responseObject[@"pathData"];
             for (int i = 0; i < arrResult.count; i++) {
@@ -59,7 +58,6 @@
                 location.CORDINATEY = [arrResult[i][@"lat"] doubleValue];
                 location.CORDINATEX = [arrResult[i][@"lon"] doubleValue];
                 [weakSelf.orderLocations addObject:location];
-                NSLog(@"%@", location);
             }
             if([_delegate respondsToSelector:@selector(success)]) {
                 [_delegate success];

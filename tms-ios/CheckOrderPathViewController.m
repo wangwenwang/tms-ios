@@ -42,8 +42,12 @@
 /// 百度地图控件
 @property (weak, nonatomic) IBOutlet BMKMapView *mapViwe;
 
+// 配载单号
+@property (weak, nonatomic) IBOutlet UILabel *shipmentCodeLabel;
+
 // 路线距离
 @property (weak, nonatomic) IBOutlet UILabel *pathDistanceField;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *pathDistanceField_bottom;
 
 @end
 
@@ -73,8 +77,11 @@
 }
 
 - (void)viewDidLoad {
+    
     [super viewDidLoad];
+    
     self.title = @"订单路线";
+    _shipmentCodeLabel.text = [NSString stringWithFormat:@"配载单号：%@", _shipmentCode];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -97,6 +104,13 @@
 
 - (void)dealloc {
     NSLog(@"%s", __func__);
+}
+
+- (void)updateViewConstraints {
+    
+    [super updateViewConstraints];
+    
+    _pathDistanceField_bottom.constant = SafeAreaBottomHeight;
 }
 
 #pragma mark -- BMKMapViewDelegate
@@ -145,8 +159,8 @@
  *@param error 错误号，@see BMKSearchErrorCode
  */
 - (void)onGetDrivingRouteResult:(BMKRouteSearch *)searcher result:(BMKDrivingRouteResult *)result errorCode:(BMKSearchErrorCode)error {
-    NSLog(@"获取驾车路线成功发挥结果");
-    NSLog(@"onGetDrivingRouteResult: %u", error);
+    
+    NSLog(@"获取驾车路线成功发挥结果: %u", error);
     
     if(error == BMK_SEARCH_NO_ERROR) {
         BMKDrivingRouteLine *plan = result.routes[0];
@@ -218,7 +232,9 @@
         //递归回调
         [self searchDrivingPath];
     }else {
-        [Tools showAlert:self.view andTitle:@"获取线路失败！"];
+        
+        NSString *msg = [NSString stringWithFormat:@"获取线路失败.数量:%lu,代码:%d", (unsigned long)_service.orderLocations.count, error];
+        [Tools showAlert:self.view andTitle:msg];
     }
 }
 
@@ -361,7 +377,13 @@
     }else if(routeAnnotation.type == 7) {
         view.image = [UIImage imageNamed:@"LM_Map_Way"];
     }else if(routeAnnotation.type == 8) {
-        view.image = [UIImage imageNamed:@"LM_Map_End"];
+        if([_shipmentStatus isEqualToString:@"在途"]) {
+            
+            view.image = [UIImage imageNamed:@"lm_map_curr"];
+        }else{
+            
+            view.image = [UIImage imageNamed:@"LM_Map_End"];
+        }
     }
     return view;
 }
@@ -451,7 +473,7 @@
     drivingRouteSearchOption.from = from;
     drivingRouteSearchOption.wayPointsArray = passBys;
     drivingRouteSearchOption.to = to;
-    drivingRouteSearchOption.drivingRequestTrafficType = BMK_DRIVING_REQUEST_TRAFFICE_TYPE_PATH_AND_TRAFFICE;
+    drivingRouteSearchOption.drivingRequestTrafficType = BMK_DRIVING_REQUEST_TRAFFICE_TYPE_NONE;
     
     BOOL flag = [_routeSearch drivingSearch:drivingRouteSearchOption];
     if(flag) {

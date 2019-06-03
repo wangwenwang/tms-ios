@@ -118,6 +118,7 @@
         NSString * first = @"";
         NSString * second = @"";
         NSString * third = @"";
+        NSString * fourth = @"";
         NSArray *args = [JSContext currentArguments];
         for (JSValue *jsVal in args) {
             first = jsVal.toString;
@@ -130,6 +131,10 @@
         @try {
             JSValue *jsVal = args[2];
             third = jsVal.toString;
+        } @catch (NSException *exception) { }
+        @try {
+            JSValue *jsVal = args[3];
+            fourth = jsVal.toString;
         } @catch (NSException *exception) { }
         
         if([first isEqualToString:@"微信登录"]) {
@@ -147,15 +152,18 @@
             // 销毁定时器
             [_localTimer invalidate];
             
-            if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"weixin://"]] || [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"Whatapp://"]] || [WXApi isWXAppInstalled]) {
+            dispatch_async(dispatch_get_main_queue(), ^{
                 
-                // 微信
-                NSLog(@"设备已安装【微信】");
-            }else {
-                
-                // 移除微信按钮
-                [IOSToVue TellVueWXInstall_Check_Ajax:_webView andIsInstall:@"NO"];
-            }
+                if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"weixin://"]] || [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"Whatapp://"]] || [WXApi isWXAppInstalled]) {
+                    
+                    // 微信
+                    NSLog(@"设备已安装【微信】");
+                }else {
+                    
+                    // 移除微信按钮
+                    [IOSToVue TellVueWXInstall_Check_Ajax:_webView andIsInstall:@"NO"];
+                }
+            });
             
             // 发送APP版本号
             [IOSToVue TellVueVersionShow:_webView andVersion:[NSString stringWithFormat:@"版本:%@", [Tools getCFBundleShortVersionString]]];
@@ -180,7 +188,7 @@
             
             dispatch_async(dispatch_get_main_queue(), ^{
                 
-                [self showLocLine:second];
+                [self showLocLine:second andShipmentCode:third andShipmentStatus:fourth];
             });
         }
         // 服务器地址
@@ -255,7 +263,7 @@
             
             [_service reverseGeo:_app.cellphone andLon:_location.longitude andLat:_location.latitude andWebView:_webView andTimingTrackingOrTellVue:GeoOfTellVue];
         }
-        NSLog(@"js传ios：%@   %@   %@",first, second, third);
+        NSLog(@"js传ios：%@   %@   %@   %@",first, second, third, fourth);
     };
 }
 
@@ -451,10 +459,12 @@
 #pragma mark - 功能函数
 
 // 查看路线
-- (void)showLocLine:(NSString *)shipmentId {
+- (void)showLocLine:(NSString *)shipmentId andShipmentCode:(NSString *)shipmentCode andShipmentStatus:(NSString *)shipmentStatus {
     
     CheckOrderPathViewController *vc = [[CheckOrderPathViewController alloc] init];
     vc.orderIDX = shipmentId;
+    vc.shipmentCode = shipmentCode;
+    vc.shipmentStatus = shipmentStatus;
     [self presentViewController:vc animated:YES completion:nil];
 }
 
