@@ -7,6 +7,7 @@
 //
 
 #import "ViewController.h"
+#import "XHVersion.h"
 
 @interface ViewController ()<UIGestureRecognizerDelegate, UIWebViewDelegate, BMKLocationServiceDelegate, ServiceToolsDelegate, CLLocationManagerDelegate> {
     
@@ -257,11 +258,39 @@
                 _service = [[ServiceTools alloc] init];
             }
             _service.delegate = self;
+            
+            // 检查更新
+            [XHVersion checkNewVersion];
         }
         // 获取当前位置页面已加载，预留接口，防止js获取当前位置出问题
         else if([first isEqualToString:@"获取当前位置页面已加载"]) {
             
             [_service reverseGeo:_app.cellphone andLon:_location.longitude andLat:_location.latitude andWebView:_webView andTimingTrackingOrTellVue:GeoOfTellVue];
+        }
+        // 检查更新
+        else if([first isEqualToString:@"检查版本更新"]) {
+            
+            // 检查更新
+            [XHVersion checkNewVersion];
+            
+            // 2.如果你需要自定义提示框,请使用下面方法
+            [XHVersion checkNewVersionAndCustomAlert:^(XHAppInfo *appInfo) {
+                
+                NSLog(@"新版本信息:\n 版本号 = %@ \n 更新时间 = %@\n 更新日志 = %@ \n 在AppStore中链接 = %@\n AppId = %@ \n bundleId = %@" ,appInfo.version,appInfo.currentVersionReleaseDate,appInfo.releaseNotes,appInfo.trackViewUrl,appInfo.trackId,appInfo.bundleId);
+            } andNoNewVersionBlock:^(XHAppInfo *appInfo) {
+                
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_8_0
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"已经是最新版本" message:@"" delegate:self cancelButtonTitle:@"确定", nil];
+                [alertView show];
+#endif
+                
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_8_0
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"已经是最新版本" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+                [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                }]];
+                [self presentViewController:alert animated:YES completion:nil];
+#endif
+            }];
         }
         NSLog(@"js传ios：%@   %@   %@   %@",first, second, third, fourth);
     };
