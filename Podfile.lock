@@ -27,7 +27,7 @@ DEPENDENCIES:
   - WechatOpenSDK
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  https://github.com/CocoaPods/Specs.git:
     - AFNetworking
     - BaiduMapKit
     - MBProgressHUD
@@ -43,4 +43,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 1b7f5b1c18f173051d7488f272447562f6348619
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.9.3
