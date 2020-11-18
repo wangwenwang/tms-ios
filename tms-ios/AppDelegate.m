@@ -26,7 +26,7 @@
     BMKMapManager * _mapManager;
 }
 
-@property (strong, nonatomic) UIWebView *webView;
+@property (strong, nonatomic) WKWebView *webView;
 
 @property (nonatomic, strong)LMProgressView *progressView;
 

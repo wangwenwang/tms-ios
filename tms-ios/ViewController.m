@@ -11,7 +11,7 @@
 
 #import <AVFoundation/AVFoundation.h>
 
-@interface ViewController ()<UIGestureRecognizerDelegate, UIWebViewDelegate, BMKLocationServiceDelegate, ServiceToolsDelegate, CLLocationManagerDelegate, AVSpeechSynthesizerDelegate, AVAudioPlayerDelegate> {
+@interface ViewController ()<UIGestureRecognizerDelegate, BMKLocationServiceDelegate, ServiceToolsDelegate, CLLocationManagerDelegate, AVSpeechSynthesizerDelegate, AVAudioPlayerDelegate, WKUIDelegate, WKScriptMessageHandler> {
     
     // 百度地图定位服务
     BMKLocationService *_locationService;
@@ -188,14 +188,14 @@
 }
 
 
-- (void)webViewDidFinishLoad:(UIWebView *)webView {
+- (void)webViewDidFinishLoad:(WKWebView *)webView {
     
     [Tools closeWebviewEdit:_webView];
 }
 
 
 // webViewDidFinishLoad方法晚于vue的mounted函数 0.3秒左右，不采用
-- (void)webViewDidStartLoad:(UIWebView *)webView{
+- (void)webViewDidStartLoad:(WKWebView *)webView{
     
     // iOS监听vue的函数
     JSContext *context = [self.webView valueForKeyPath:@"documentView.webView.mainFrame.javaScriptContext"];
@@ -221,162 +221,6 @@
             JSValue *jsVal = args[3];
             fourth = jsVal.toString;
         } @catch (NSException *exception) { }
-        
-        if([first isEqualToString:@"微信登录"]) {
-            
-            SendAuthReq* req = [[SendAuthReq alloc] init];
-            req.scope = @"snsapi_userinfo";
-            req.state = @"wechat_sdk_tms";
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [WXApi sendReq:req];
-            });
-        }
-        // 第一次加载登录页，不执行此函数，所以还写了一个定时器
-        else if([first isEqualToString:@"登录页面已加载"]) {
-            
-            // 销毁定时器
-            [_localTimer invalidate];
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                
-                if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"weixin://"]] || [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"Whatapp://"]] || [WXApi isWXAppInstalled]) {
-                    
-                    // 微信
-                    NSLog(@"设备已安装【微信】");
-                }else {
-                    
-                    // 移除微信按钮
-                    [IOSToVue TellVueWXInstall_Check_Ajax:_webView andIsInstall:@"NO"];
-                }
-            });
-            
-            // 发送APP版本号
-            [IOSToVue TellVueVersionShow:_webView andVersion:[NSString stringWithFormat:@"版本:%@", [Tools getCFBundleShortVersionString]]];
-            
-            // 发送设备标识
-            [IOSToVue TellVueDevice:_webView andDevice:@"iOS"];
-            
-            // 停止定位功能、销毁定时器
-            [_localTimer invalidate];
-            [_locationService stopUserLocationService];
-        }
-        // 导航
-        else if([first isEqualToString:@"导航"]) {
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                
-                [self doNavigationWithEndLocation:second];
-            });
-        }
-        // 查看路线
-        else if([first isEqualToString:@"查看路线"]) {
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                
-                [self showLocLine:second andShipmentCode:third andShipmentStatus:fourth];
-            });
-        }
-        // 服务器地址
-        else if([first isEqualToString:@"服务器地址"]) {
-            
-            [Tools setServerAddress:second];
-        }
-        // 记住帐号密码，开始定位
-        else if([first isEqualToString:@"记住帐号密码"]) {
-            
-            // 启用定时器
-            [self startUpdataLocationTimer];
-            
-            if([Tools isLocationServiceOpen]) {
-                
-                _PositioningDelay = 0;
-            } else {
-                
-                _PositioningDelay = 1;
-            }
-            
-            // 判断定位权限  延迟检查，因为用户首次选择需要时间
-            dispatch_async(dispatch_get_global_queue(0, 0), ^{
-                
-                NSString *enter = [Tools getEnterTheHomePage];
-                if([enter isEqualToString:@"YES"]) {
-                    sleep(3);
-                }else {
-                    sleep(10);
-                }
-                [Tools setEnterTheHomePage:@"YES"];
-                
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    
-                    if([Tools isLocationServiceOpen]) {
-                        NSLog(@"应用拥有定位权限");
-                    } else {
-                        [Tools skipLocationSettings];
-                    }
-                });
-            });
-            
-            // 解决iOS11下无法弹出始终允许定位权限(与原生请求定位权限冲突)
-            dispatch_async(dispatch_get_global_queue(0, 0), ^{
-                
-                sleep(_PositioningDelay);
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    
-                    _app.cellphone = second;
-                    
-                    _locationService = [[BMKLocationService alloc] init];
-                    _locationService.delegate = self;
-                    //启动LocationService
-                    [_locationService startUserLocationService];
-                    //设置定位精度
-                    _locationService.desiredAccuracy = kCLLocationAccuracyHundredMeters;
-                    //指定最小距离更新(米)，默认：kCLDistanceFilterNone
-                    _locationService.distanceFilter = 0;
-                    if(SystemVersion > 9.0) {
-                        _locationService.allowsBackgroundLocationUpdates = YES;
-                    }
-                    _locationService.pausesLocationUpdatesAutomatically = NO;
-                });
-            });
-            if(!_service) {
-                _service = [[ServiceTools alloc] init];
-            }
-            _service.delegate = self;
-            
-            // 检查更新
-            [XHVersion checkNewVersion];
-        }
-        // 获取当前位置页面已加载，预留接口，防止js获取当前位置出问题
-        else if([first isEqualToString:@"获取当前位置页面已加载"]) {
-            
-            [_service reverseGeo:_app.cellphone andLon:_location.longitude andLat:_location.latitude andWebView:_webView andTimingTrackingOrTellVue:GeoOfTellVue];
-        }
-        // 检查更新
-        else if([first isEqualToString:@"检查版本更新"]) {
-            
-            // 检查更新
-            [XHVersion checkNewVersion];
-            
-            // 2.如果你需要自定义提示框,请使用下面方法
-            [XHVersion checkNewVersionAndCustomAlert:^(XHAppInfo *appInfo) {
-                
-                NSLog(@"新版本信息:\n 版本号 = %@ \n 更新时间 = %@\n 更新日志 = %@ \n 在AppStore中链接 = %@\n AppId = %@ \n bundleId = %@" ,appInfo.version,appInfo.currentVersionReleaseDate,appInfo.releaseNotes,appInfo.trackViewUrl,appInfo.trackId,appInfo.bundleId);
-            } andNoNewVersionBlock:^(XHAppInfo *appInfo) {
-                
-#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_8_0
-                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"已经是最新版本" message:@"" delegate:self cancelButtonTitle:@"确定", nil];
-                [alertView show];
-#endif
-                
-#if __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_8_0
-                UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"已经是最新版本" message:@"" preferredStyle:UIAlertControllerStyleAlert];
-                [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-                }]];
-                [self presentViewController:alert animated:YES completion:nil];
-#endif
-            }];
-        }
-        NSLog(@"js传ios：%@   %@   %@   %@",first, second, third, fourth);
     };
 }
 
@@ -478,10 +322,18 @@
     
     if(_webView == nil) {
         
-        _webView = [[UIWebView alloc] init];
-        [_webView setFrame:CGRectMake(0, kStatusHeight, ScreenWidth, ScreenHeight - kStatusHeight - SafeAreaBottomHeight)];
-        _webView.delegate = self;
+        // wk代理
+        WKWebViewConfiguration *config = [[WKWebViewConfiguration alloc] init];
+        config.userContentController = [[WKUserContentController alloc] init];
+        [config.userContentController addScriptMessageHandler:self name:@"messageSend"];
+        config.preferences = [[WKPreferences alloc] init];
+        config.preferences.minimumFontSize = 0;
+        config.preferences.javaScriptEnabled = YES;
+        config.preferences.javaScriptCanOpenWindowsAutomatically = NO;
+        
+        _webView = [[WKWebView alloc] initWithFrame:CGRectMake(0, kStatusHeight, ScreenWidth, ScreenHeight - kStatusHeight - SafeAreaBottomHeight) configuration:config];
         [self.view addSubview:_webView];
+        
         
         // 初始化信息
         _app = (AppDelegate *)[[UIApplication sharedApplication] delegate];
@@ -512,10 +364,11 @@
         [Tools setLastVersion];
         
         // 加载URL
-        NSString *filePath = [NSString stringWithFormat:@"%@/dist/%@", unzipPath, @"index.html"];
-        NSURL *url = [[NSURL alloc] initWithString:filePath];
+        NSString *basePath = [NSString stringWithFormat:@"%@/dist/%@", unzipPath, @""];
+        NSURL *baseUrl = [NSURL fileURLWithPath:basePath];
+        NSURL *fileUrl = [self fileURLForBuggyWKWebView8WithFileURL:baseUrl];
         
-        [_webView loadRequest:[NSURLRequest requestWithURL:url]];
+        [_webView loadRequest:[NSURLRequest requestWithURL:fileUrl]];
         
         [[NSNotificationCenter defaultCenter] postNotificationName:kReceive_WebView_Notification object:nil userInfo:@{@"webView":_webView}];
         // 禁用弹簧效果
@@ -539,6 +392,184 @@
             }
         }
     }
+}
+
+#pragma mark - WKScriptMessageHandler
+//当js 通过 注入的方法 @“messageSend” 时会调用代理回调。 原生收到的所有信息都通过此方法接收。
+-(void)userContentController:(WKUserContentController *)userContentController didReceiveScriptMessage:(WKScriptMessage *)message {
+    
+    NSLog(@"原生收到了js发送过来的消息 message.body = %@",message.body);
+    
+    __weak __typeof(self)weakSelf = self;
+    
+    if([message.name isEqualToString:@"messageSend"]){
+        
+        // 第一次加载登录页，不执行此函数，所以还写了一个定时器
+        if([message.body[@"a"] isEqualToString:@"微信登录"]){
+            
+            SendAuthReq* req = [[SendAuthReq alloc] init];
+            req.scope = @"snsapi_userinfo";
+            req.state = @"wechat_sdk_tms";
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [WXApi sendReq:req];
+            });
+        }
+        else if([message.body[@"a"] isEqualToString:@"登录页面已加载"]){
+            
+            // 销毁定时器
+            [_localTimer invalidate];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"weixin://"]] || [[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"Whatapp://"]] || [WXApi isWXAppInstalled]) {
+                    
+                    // 微信
+                    NSLog(@"设备已安装【微信】");
+                }else {
+                    
+                    // 移除微信按钮
+                    [IOSToVue TellVueWXInstall_Check_Ajax:_webView andIsInstall:@"NO"];
+                }
+            });
+            
+            // 发送APP版本号
+            [IOSToVue TellVueVersionShow:_webView andVersion:[NSString stringWithFormat:@"版本:%@", [Tools getCFBundleShortVersionString]]];
+            
+            // 发送设备标识
+            [IOSToVue TellVueDevice:_webView andDevice:@"iOS"];
+            
+            // 停止定位功能、销毁定时器
+            [_localTimer invalidate];
+            [_locationService stopUserLocationService];
+        }
+        else if([message.body[@"a"] isEqualToString:@"导航"]){
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                [self doNavigationWithEndLocation:message.body[@"b"]];
+            });
+        }
+        else if([message.body[@"a"] isEqualToString:@"查看路线"]){
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                [self showLocLine:message.body[@"b"] andShipmentCode:message.body[@"c"] andShipmentStatus:message.body[@"d"]];
+            });
+        }
+        else if([message.body[@"a"] isEqualToString:@"服务器地址"]){
+            
+            [Tools setServerAddress:message.body[@"b"]];
+        }
+        // 记住帐号密码，开始定位
+        else if([message.body[@"a"] isEqualToString:@"记住帐号密码"]){
+            // 启用定时器
+            [self startUpdataLocationTimer];
+            
+            if([Tools isLocationServiceOpen]) {
+                
+                _PositioningDelay = 0;
+            } else {
+                
+                _PositioningDelay = 1;
+            }
+            
+            // 判断定位权限  延迟检查，因为用户首次选择需要时间
+            dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                
+                NSString *enter = [Tools getEnterTheHomePage];
+                if([enter isEqualToString:@"YES"]) {
+                    sleep(3);
+                }else {
+                    sleep(10);
+                }
+                [Tools setEnterTheHomePage:@"YES"];
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    
+                    if([Tools isLocationServiceOpen]) {
+                        NSLog(@"应用拥有定位权限");
+                    } else {
+                        [Tools skipLocationSettings];
+                    }
+                });
+            });
+            
+            // 解决iOS11下无法弹出始终允许定位权限(与原生请求定位权限冲突)
+            dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                
+                sleep(_PositioningDelay);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    
+                    _app.cellphone = message.body[@"b"];
+                    
+                    _locationService = [[BMKLocationService alloc] init];
+                    _locationService.delegate = self;
+                    //启动LocationService
+                    [_locationService startUserLocationService];
+                    //设置定位精度
+                    _locationService.desiredAccuracy = kCLLocationAccuracyHundredMeters;
+                    //指定最小距离更新(米)，默认：kCLDistanceFilterNone
+                    _locationService.distanceFilter = 0;
+                    if(SystemVersion > 9.0) {
+                        _locationService.allowsBackgroundLocationUpdates = YES;
+                    }
+                    _locationService.pausesLocationUpdatesAutomatically = NO;
+                });
+            });
+            if(!_service) {
+                _service = [[ServiceTools alloc] init];
+            }
+            _service.delegate = self;
+            
+            // 检查更新
+            [XHVersion checkNewVersion];
+        }
+        // 获取当前位置页面已加载，预留接口，防止js获取当前位置出问题
+        else if([message.body[@"a"] isEqualToString:@"获取当前位置页面已加载"]){
+            
+            [_service reverseGeo:_app.cellphone andLon:_location.longitude andLat:_location.latitude andWebView:_webView andTimingTrackingOrTellVue:GeoOfTellVue];
+        }
+        else if([message.body[@"a"] isEqualToString:@"检查版本更新"]){
+            
+            // 检查更新
+            [XHVersion checkNewVersion];
+            
+            // 2.如果你需要自定义提示框,请使用下面方法
+            [XHVersion checkNewVersionAndCustomAlert:^(XHAppInfo *appInfo) {
+                
+                NSLog(@"新版本信息:\n 版本号 = %@ \n 更新时间 = %@\n 更新日志 = %@ \n 在AppStore中链接 = %@\n AppId = %@ \n bundleId = %@" ,appInfo.version,appInfo.currentVersionReleaseDate,appInfo.releaseNotes,appInfo.trackViewUrl,appInfo.trackId,appInfo.bundleId);
+            } andNoNewVersionBlock:^(XHAppInfo *appInfo) {
+                
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_8_0
+                UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"已经是最新版本" message:@"" delegate:self cancelButtonTitle:@"确定", nil];
+                [alertView show];
+#endif
+                
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= __IPHONE_8_0
+                UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"已经是最新版本" message:@"" preferredStyle:UIAlertControllerStyleAlert];
+                [alert addAction:[UIAlertAction actionWithTitle:@"确定" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                }]];
+                [self presentViewController:alert animated:YES completion:nil];
+#endif
+            }];
+        }
+    }
+}
+
+#pragma mark - WKWebViewDelegate
+- (NSURL *)fileURLForBuggyWKWebView8WithFileURL: (NSURL *)fileURL {
+    NSError *error = nil;
+    if (!fileURL.fileURL || ![fileURL checkResourceIsReachableAndReturnError:&error]) {
+        return nil;
+    }
+    NSFileManager *fileManager= [NSFileManager defaultManager];
+    NSURL *temDirURL = [[NSURL fileURLWithPath:NSTemporaryDirectory()] URLByAppendingPathComponent:@"www"];
+    [fileManager createDirectoryAtURL:temDirURL withIntermediateDirectories:YES attributes:nil error:&error];
+     NSURL *htmlDestURL = [temDirURL URLByAppendingPathComponent:fileURL.lastPathComponent];
+    [fileManager removeItemAtURL:htmlDestURL error:&error];
+    [fileManager copyItemAtURL:fileURL toURL:htmlDestURL error:&error];
+    NSURL *finalHtmlDestUrl = [htmlDestURL URLByAppendingPathComponent:@"index.html"];
+    return finalHtmlDestUrl;
 }
 
 

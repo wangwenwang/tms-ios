@@ -19,7 +19,7 @@
 
 @property (strong, nonatomic) AppDelegate *app;
 
-@property (strong, nonatomic) UIWebView *webview;
+@property (strong, nonatomic) WKWebView *webview;
 
 @end;
 
@@ -67,7 +67,7 @@
                         int c = [Tools compareVersion:server_zipVersion andLocati:currZipVersion];
                         if(c == 1) {
                         
-                            // 设置 webView 为 nil，解决UIWebview调用reload导致JSContext失效的问题
+                            // 设置 webView 为 nil，解决WKWebview调用reload导致JSContext失效的问题
                             UIViewController *rootViewController = [Tools getRootViewController];
                             if([rootViewController isKindOfClass:[ViewController class]]) {
                                 
@@ -203,7 +203,7 @@
     }];
 }
 
-- (void)reverseGeo:(nullable NSString *)cellphone andLon:(double)lon andLat:(double)lat andWebView:(nullable UIWebView *)webView andTimingTrackingOrTellVue:(nullable NSString *)ttOrtv {
+- (void)reverseGeo:(nullable NSString *)cellphone andLon:(double)lon andLat:(double)lat andWebView:(nullable WKWebView *)webView andTimingTrackingOrTellVue:(nullable NSString *)ttOrtv {
     
     NSString *url = [NSString stringWithFormat:@"http://api.map.baidu.com/geocoder/v2/?callback=renderReverse&location=%f,%f&output=json&pois=1&ak=TWj4fsDeV9hQpmwc8Fqp5A2h2TtCwVXX&mcode=com.kaidongyuan.tms", lat, lon];
     

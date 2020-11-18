@@ -19,7 +19,7 @@
 
 @interface ViewController : UIViewController
 
-@property (strong, nonatomic) UIWebView *webView;
+@property (strong, nonatomic) WKWebView *webView;
 
 - (void)addWebView;
 
