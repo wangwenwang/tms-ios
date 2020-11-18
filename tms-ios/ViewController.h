@@ -23,5 +23,7 @@
 
 - (void)addWebView;
 
+- (void)playOnOtherMusic:(NSString *)text;
+
 @end
 

@@ -9,7 +9,9 @@
 #import "ViewController.h"
 #import "XHVersion.h"
 
-@interface ViewController ()<UIGestureRecognizerDelegate, UIWebViewDelegate, BMKLocationServiceDelegate, ServiceToolsDelegate, CLLocationManagerDelegate> {
+#import <AVFoundation/AVFoundation.h>
+
+@interface ViewController ()<UIGestureRecognizerDelegate, UIWebViewDelegate, BMKLocationServiceDelegate, ServiceToolsDelegate, CLLocationManagerDelegate, AVSpeechSynthesizerDelegate, AVAudioPlayerDelegate> {
     
     // 百度地图定位服务
     BMKLocationService *_locationService;
@@ -36,14 +38,96 @@
 @property (assign, nonatomic) BOOL allowUpdate;
 
 @property (strong, nonatomic) AppDelegate *app;
+ 
+/** 播报的内容 */
+@property (nonatomic, readwrite , strong) AVSpeechSynthesizer *synth;
+/** 负责播放 */
+@property (nonatomic, readwrite , strong) AVSpeechUtterance *utterance;
+/** 静音播放 */
+@property (nonatomic, strong) AVAudioPlayer *audioPlayer;
 
 @end
 
 @implementation ViewController
 
+- (void)playOnOtherMusic:(NSString *)text{
+    
+    // 设置音频类别
+    NSError *setCategoryError = nil;
+    BOOL isSuccess = [[AVAudioSession sharedInstance] setCategory:AVAudioSessionCategoryPlayback withOptions:AVAudioSessionCategoryOptionMixWithOthers | AVAudioSessionCategoryOptionDuckOthers error:&setCategoryError];
+    if (isSuccess) {
+        NSLog(@"设置音频类别成功");
+    }else{
+        NSLog(@"不能设置音频类别");
+        NSLog(@"%@", setCategoryError.localizedDescription);
+    }
+    
+    __weak typeof(self) weakSelf = self;
+    //创建播放器并播放
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSString *filePath = [[NSBundle mainBundle]pathForResource:@"wrong01_2" ofType:@"mp3"];
+        NSData *fileData = [NSData dataWithContentsOfFile:filePath];
+        NSError *audioPlayerError = nil;
+        weakSelf.audioPlayer = [[AVAudioPlayer alloc]initWithData:fileData error:&audioPlayerError];
+        if (weakSelf.audioPlayer != nil) {
+            weakSelf.audioPlayer.delegate = self;
+            if ([weakSelf.audioPlayer prepareToPlay] && [weakSelf.audioPlayer play]) {
+                NSLog(@"Successfully started playing.");
+            }else{
+                NSLog(@"Failed to play the audio file.");
+                weakSelf.audioPlayer = nil;
+            }
+        }else{
+            NSLog(@"Could not instantiate the audio player.");
+        }
+    });
+    self.utterance = [AVSpeechUtterance speechUtteranceWithString:text];
+    // 播报的语速
+    self.utterance.rate = AVSpeechUtteranceDefaultSpeechRate;
+    // 中式发音
+    AVSpeechSynthesisVoice *voice = [AVSpeechSynthesisVoice voiceWithLanguage:@"zh-CN"];
+    self.utterance.voice = voice;
+    self.synth = [[AVSpeechSynthesizer alloc] init];
+    self.synth.delegate = self;
+    [self.synth speakUtterance:self.utterance];
+}
+
+// 接下来,我们继续处理 AVAudioPlayerDelegate 协议方法:
+- (void)audioPlayerBeginInterruption:(AVAudioPlayer *)player{
+    
+    /* The audio session has been deactivated here */
+    NSLog(@"fsd");
+}
+
+- (void)audioPlayerEndInterruption:(AVAudioPlayer *)player withFlags:(NSUInteger)flags{
+    
+    // 打断结束
+    if (flags == AVAudioSessionInterruptionOptionShouldResume){
+        [player play];
+    }
+}
+
+- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag{
+    
+    // 播放结束
+    if (flag){
+        NSLog(@"Audio player stopped correctly.");
+    } else {
+        NSLog(@"Audio player did not stop correctly.");
+    }
+    if ([player isEqual:self.audioPlayer]){
+        self.audioPlayer = nil;
+    } else {
+        /* This is not the audio player */
+    }
+    [[AVAudioSession sharedInstance] setActive:NO withOptions:AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation error:nil];
+}
+
 - (void)viewDidLoad {
     
     [super viewDidLoad];
+    
+    [self playOnOtherMusic:@""];
     
     [self addWebView];
     

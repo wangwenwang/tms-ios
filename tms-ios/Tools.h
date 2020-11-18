@@ -28,6 +28,14 @@
 + (void)setServerAddress:(nullable NSString *)baseUrl;
 
 
+/// 获取上传位置提示语
++ (nullable NSString *)getTtsText;
+
+
+/// 设置上传位置提示语
++ (void)setTtsText:(nullable NSString *)ttsText;
+
+
 /// 版本号比较，1为服务器>本地，0为服务器=本地，-1为服务器<本地，-2为版本号不合法
 + (int)compareVersion:(nullable NSString *)server andLocati:(nullable NSString *)locati;
 

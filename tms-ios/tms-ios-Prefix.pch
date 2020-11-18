@@ -35,6 +35,9 @@
 
 #define kUserDefaults_Server_Address_key @"ServerAddress"
 
+// 上传位置成功后，语音提示
+#define kUserDefaults_TtsText_key @"TtsText"
+
 // 记住上一次版本号，解决版本更新时沙盒内容不清空问题
 #define kUserDefaults_Last_Version_key @"LastVersion"
 

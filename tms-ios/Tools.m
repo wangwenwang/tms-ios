@@ -35,6 +35,17 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
++ (nullable NSString *)getTtsText {
+    
+    return [[NSUserDefaults standardUserDefaults] stringForKey:kUserDefaults_TtsText_key];
+}
+
++ (void)setTtsText:(nullable NSString *)ttsText {
+    
+    [[NSUserDefaults standardUserDefaults] setObject:ttsText forKey:kUserDefaults_TtsText_key];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 + (int)compareVersion:(nullable NSString *)server andLocati:(nullable NSString *)locati {
     NSArray *servers = [server componentsSeparatedByString:@"."];
     NSArray *locatis = [locati componentsSeparatedByString:@"."];

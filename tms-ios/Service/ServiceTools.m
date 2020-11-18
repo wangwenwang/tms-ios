@@ -13,6 +13,7 @@
 #import "NSString+toDict.h"
 #import "IOSToVue.h"
 #import "ViewController.h"
+#import <AVFoundation/AVFoundation.h>
 
 @interface ServiceTools()
 
@@ -184,6 +185,18 @@
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         
         NSLog(@"请求成功---%@", responseObject);
+        NSString *ttsText =  [[NSUserDefaults standardUserDefaults] stringForKey:kUserDefaults_TtsText_key];
+        if(!ttsText){
+            ttsText = @"上传成功";
+        }
+        [[[ViewController alloc] init] playOnOtherMusic:ttsText];
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            sleep(2);
+            dispatch_async(dispatch_get_main_queue(), ^{
+
+                [[AVAudioSession sharedInstance] setActive:NO withOptions:AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation error:nil];
+            });
+        });
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         
         NSLog(@"请求失败---%@", error);

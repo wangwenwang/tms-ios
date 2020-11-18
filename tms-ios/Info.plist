@@ -65,6 +65,7 @@
 	<string>APP需要您的同意才能读取媒体资料库，用于上传交付照片</string>
 	<key>UIBackgroundModes</key>
 	<array>
+		<string>audio</string>
 		<string>location</string>
 	</array>
 	<key>UIRequiredDeviceCapabilities</key>
