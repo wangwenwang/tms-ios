@@ -226,7 +226,7 @@
 
 
 //导航只需要目的地经纬度，endLocation为纬度、经度的数组
--(void)doNavigationWithEndLocation:(NSString *)address {
+-(void)doNavigationWithEndLocation:(NSString *)address andLng:(NSString *)lng andLat:(NSString *)lat andName:(NSString *)name {
     
     NSMutableArray *maps = [NSMutableArray array];
     
@@ -239,7 +239,12 @@
     if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"iosamap://"]]) {
         NSMutableDictionary *gaodeMapDic = [NSMutableDictionary dictionary];
         gaodeMapDic[@"title"] = @"高德地图";
-        NSString *urlString = [NSString stringWithFormat:@"iosamap://path?sourceApplication=创云司机宝&sid=BGVIS1&slat=&slon=&sname=&did=BGVIS2&dname=%@&dev=0&t=0", address];
+        NSString *urlString;
+        if(lng && lat){
+            urlString = [NSString stringWithFormat:@"iosamap://path?sourceApplication=配货易司机S&sid=BGVIS1&slat=&slon=&sname=&did=BGVIS2&dlat=%@&dlon=%@&dname=%@&dev=0&m=0&t=0", lat, lng, name];
+        }else{
+            urlString = [NSString stringWithFormat:@"iosamap://path?sourceApplication=配货易司机S&sid=BGVIS1&slat=&slon=&sname=&did=BGVIS2&dname=%@&dev=0&t=0", address];
+        }
         urlString = [urlString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
         gaodeMapDic[@"url"] = urlString;
         [maps addObject:gaodeMapDic];
@@ -249,7 +254,12 @@
     if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"baidumap://"]]) {
         NSMutableDictionary *baiduMapDic = [NSMutableDictionary dictionary];
         baiduMapDic[@"title"] = @"百度地图";
-        NSString *urlString = [NSString stringWithFormat:@"baidumap://map/direction?destination=%@&mode=driving&coord_type=gcj02", address];
+        NSString *urlString;
+        if(lng && lat){
+            urlString = [NSString stringWithFormat:@"baidumap://map/direction?destination=%@,%@&mode=driving&coord_type=gcj02&src=%@", lat, lng, name];
+        }else{
+            urlString = [NSString stringWithFormat:@"baidumap://map/direction?destination=%@&mode=driving&coord_type=gcj02", address];
+        }
         urlString = [urlString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]];
         baiduMapDic[@"url"] = urlString;
         [maps addObject:baiduMapDic];
@@ -281,21 +291,29 @@
             UIAlertAction * action = [UIAlertAction actionWithTitle:title style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
                 // 起点
                 MKMapItem *currentLocation = [MKMapItem mapItemForCurrentLocation];
-                
+                // 配置
+                NSDictionary *dict = @{
+                    MKLaunchOptionsDirectionsModeKey:MKLaunchOptionsDirectionsModeDriving,
+                    MKLaunchOptionsMapTypeKey:@(MKMapTypeStandard),
+                    MKLaunchOptionsShowsTrafficKey:@(YES)
+                };
                 // 终点
-                CLGeocoder *geo = [[CLGeocoder alloc] init];
-                [geo geocodeAddressString:address completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
-                    
-                    CLPlacemark *endMark=placemarks.firstObject;
-                    MKPlacemark *mkEndMark=[[MKPlacemark alloc]initWithPlacemark:endMark];
-                    MKMapItem *endItem=[[MKMapItem alloc]initWithPlacemark:mkEndMark];
-                    NSDictionary *dict=@{
-                                         MKLaunchOptionsDirectionsModeKey:MKLaunchOptionsDirectionsModeDriving,
-                                         MKLaunchOptionsMapTypeKey:@(MKMapTypeStandard),
-                                         MKLaunchOptionsShowsTrafficKey:@(YES)
-                                         };
-                    [MKMapItem openMapsWithItems:@[currentLocation,endItem] launchOptions:dict];\
-                }];
+                if(lng && lat){
+                    CLLocationCoordinate2D lng_lat = CLLocationCoordinate2DMake([lat floatValue], [lng floatValue]);
+                    MKMapItem *to_lng_lat = [[MKMapItem alloc] initWithPlacemark:[[MKPlacemark alloc] initWithCoordinate:lng_lat addressDictionary:nil]];
+                    to_lng_lat.name = name;
+                    [MKMapItem openMapsWithItems:@[currentLocation, to_lng_lat] launchOptions:dict];
+                }else{
+                    CLGeocoder *geo = [[CLGeocoder alloc] init];
+                    [geo geocodeAddressString:address completionHandler:^(NSArray<CLPlacemark *> * _Nullable placemarks, NSError * _Nullable error) {
+                        
+                        CLPlacemark *endMark = placemarks.firstObject;
+                        MKPlacemark *mkEndMark = [[MKPlacemark alloc]initWithPlacemark:endMark];
+                        MKMapItem *endItem = [[MKMapItem alloc]initWithPlacemark:mkEndMark];
+                        
+                        [MKMapItem openMapsWithItems:@[currentLocation, endItem] launchOptions:dict];
+                    }];
+                }
             }];
             [alert addAction:action];
             
@@ -445,8 +463,11 @@
         else if([message.body[@"a"] isEqualToString:@"导航"]){
             
             dispatch_async(dispatch_get_main_queue(), ^{
-                
-                [self doNavigationWithEndLocation:message.body[@"b"]];
+                NSString *b = message.body[@"b"];
+                NSString *lng = message.body[@"c_lng"];
+                NSString *lat = message.body[@"d_lat"];
+                NSString *name = message.body[@"e_name"];
+                [self doNavigationWithEndLocation:b andLng:lng andLat:lat andName:name];
             });
         }
         else if([message.body[@"a"] isEqualToString:@"查看路线"]){
