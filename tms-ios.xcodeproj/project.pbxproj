@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		3B0F270B25763EB300A1F89B /* dist.zip in Resources */ = {isa = PBXBuildFile; fileRef = 3B0F270A25763EB300A1F89B /* dist.zip */; };
 		3B176A14256274DE00A595DA /* wrong01_2.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 3B176A11256274DE00A595DA /* wrong01_2.mp3 */; };
 		3B2087882195296C000C36A9 /* CheckOrderPathViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B2087852195296A000C36A9 /* CheckOrderPathViewController.m */; };
 		3B20878B219529DF000C36A9 /* CheckPathService.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B208789219529DE000C36A9 /* CheckPathService.m */; };
@@ -22,6 +21,7 @@
 		3B6A76202180260700C55026 /* NSDictionary+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6A4760216C85210062908E /* NSDictionary+Extension.m */; };
 		3B6A76212180260A00C55026 /* NSDictionary+toString.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6A4762216C85210062908E /* NSDictionary+toString.m */; };
 		3B6A76222180260D00C55026 /* NSString+toDict.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6A4764216C85210062908E /* NSString+toDict.m */; };
+		3B753A372630D2520050D120 /* dist.zip in Resources */ = {isa = PBXBuildFile; fileRef = 3B753A362630D2520050D120 /* dist.zip */; };
 		3B8E6D2122A60D79003FCA27 /* XHVersion.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B8E6D1C22A60D79003FCA27 /* XHVersion.m */; };
 		3B8E6D2222A60D79003FCA27 /* XHAppInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B8E6D1D22A60D79003FCA27 /* XHAppInfo.m */; };
 		3B8E6D2322A60D79003FCA27 /* XHVersionRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B8E6D1E22A60D79003FCA27 /* XHVersionRequest.m */; };
@@ -59,7 +59,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		3B0F270A25763EB300A1F89B /* dist.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = dist.zip; sourceTree = "<group>"; };
 		3B176A11256274DE00A595DA /* wrong01_2.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = wrong01_2.mp3; sourceTree = "<group>"; };
 		3B2087852195296A000C36A9 /* CheckOrderPathViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CheckOrderPathViewController.m; sourceTree = "<group>"; };
 		3B2087862195296B000C36A9 /* CheckOrderPathViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CheckOrderPathViewController.h; sourceTree = "<group>"; };
@@ -86,6 +85,7 @@
 		3B6A4764216C85210062908E /* NSString+toDict.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+toDict.m"; sourceTree = "<group>"; };
 		3B6A761C2180259D00C55026 /* LM_alert.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LM_alert.h; sourceTree = "<group>"; };
 		3B6A761D2180259D00C55026 /* LM_alert.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LM_alert.m; sourceTree = "<group>"; };
+		3B753A362630D2520050D120 /* dist.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = dist.zip; sourceTree = "<group>"; };
 		3B8E6D1B22A60D79003FCA27 /* XHVersionRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XHVersionRequest.h; sourceTree = "<group>"; };
 		3B8E6D1C22A60D79003FCA27 /* XHVersion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XHVersion.m; sourceTree = "<group>"; };
 		3B8E6D1D22A60D79003FCA27 /* XHAppInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XHAppInfo.m; sourceTree = "<group>"; };
@@ -244,8 +244,8 @@
 		3BD7CA472145F54000DFF16F /* tms-ios */ = {
 			isa = PBXGroup;
 			children = (
-				3B0F270A25763EB300A1F89B /* dist.zip */,
 				3B48D098219BEEE400006BDF /* Default-568@2x.png */,
+				3B753A362630D2520050D120 /* dist.zip */,
 				3B7FC2E5255E978700EA655B /* audio */,
 				3B6A475C216C85210062908E /* Category */,
 				3B6A761B2180259D00C55026 /* Custum */,
@@ -453,7 +453,7 @@
 				3B176A14256274DE00A595DA /* wrong01_2.mp3 in Resources */,
 				3B48D01B219BAF4600006BDF /* Launch Screen.storyboard in Resources */,
 				3BD7CA522145F54000DFF16F /* Assets.xcassets in Resources */,
-				3B0F270B25763EB300A1F89B /* dist.zip in Resources */,
+				3B753A372630D2520050D120 /* dist.zip in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -687,7 +687,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 27;
+				CURRENT_PROJECT_VERSION = 28;
 				DEVELOPMENT_TEAM = AP5995A5FC;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -695,7 +695,7 @@
 				INFOPLIST_FILE = "tms-ios/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 1.1.1;
 				NEW_SETTING = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.kaidongyuan.tms;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -710,7 +710,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 27;
+				CURRENT_PROJECT_VERSION = 28;
 				DEVELOPMENT_TEAM = AP5995A5FC;
 				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -718,7 +718,7 @@
 				INFOPLIST_FILE = "tms-ios/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 1.1.0;
+				MARKETING_VERSION = 1.1.1;
 				NEW_SETTING = "";
 				PRODUCT_BUNDLE_IDENTIFIER = com.kaidongyuan.tms;
 				PRODUCT_NAME = "$(TARGET_NAME)";
