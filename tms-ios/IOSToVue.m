@@ -66,4 +66,10 @@
     [IOSToVue TellVueMsg:webView andJsStr:jsStr];
 }
 
++ (void)TellVueVoiceStatus:(nullable WKWebView *)webView andStatus:(nullable NSString *)status {
+    
+    NSString *jsStr = [NSString stringWithFormat:@"VoiceStatus('%@')", status];
+    [IOSToVue TellVueMsg:webView andJsStr:jsStr];
+}
+
 @end

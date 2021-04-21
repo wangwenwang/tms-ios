@@ -37,4 +37,8 @@
 /// 告诉Vue当前地址
 + (void)TellVueCurrAddress:(nullable WKWebView *)webView andAddress:(nullable NSString *)address andLon:(float)lon andLat:(float)lat;
 
+
+/// 告诉Vue是否播报声音
++ (void)TellVueVoiceStatus:(nullable WKWebView *)webView andStatus:(nullable NSString *)status;
+
 @end

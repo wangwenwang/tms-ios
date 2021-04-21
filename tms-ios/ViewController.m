@@ -456,6 +456,9 @@
             // 发送设备标识
             [IOSToVue TellVueDevice:_webView andDevice:@"iOS"];
             
+            // 发送是否播报标识
+            [IOSToVue TellVueVoiceStatus:_webView andStatus:[Tools getVoiceStatus]];
+            
             // 停止定位功能、销毁定时器
             [_localTimer invalidate];
             [_locationService stopUserLocationService];
@@ -549,6 +552,12 @@
         else if([message.body[@"a"] isEqualToString:@"获取当前位置页面已加载"]){
             
             [_service reverseGeo:_app.cellphone andLon:_location.longitude andLat:_location.latitude andWebView:_webView andTimingTrackingOrTellVue:GeoOfTellVue];
+        }
+        // 声音播报状态
+        else if([message.body[@"a"] isEqualToString:@"声音播报状态"]){
+            
+            NSString *f = message.body[@"b"];
+            [Tools setVoiceStatus:message.body[@"b"]];
         }
         else if([message.body[@"a"] isEqualToString:@"检查版本更新"]){
             

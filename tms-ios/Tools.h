@@ -100,4 +100,10 @@
 /// 设置是否进入过主页（判断检查定位权限延迟，第一次进入延迟时长至10秒，否则延迟3秒）
 + (void)setEnterTheHomePage:(nullable NSString *)enter;
 
+/// 获取上传位置后，是否播报声音
++ (nullable NSString *)getVoiceStatus;
+
+/// 设置上传位置后，是否播报声音
++ (void)setVoiceStatus:(nullable NSString *)status;
+
 @end

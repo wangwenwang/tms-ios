@@ -177,4 +177,17 @@
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
+
++ (nullable NSString *)getVoiceStatus {
+    
+    return [[NSUserDefaults standardUserDefaults] stringForKey:kUserDefaults_VoiceStatus];
+}
+
+
++ (void)setVoiceStatus:(nullable NSString *)status {
+    
+    [[NSUserDefaults standardUserDefaults] setObject:status forKey:kUserDefaults_VoiceStatus];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 @end
