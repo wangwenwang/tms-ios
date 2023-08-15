@@ -17,10 +17,6 @@
 		3B48D01B219BAF4600006BDF /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3B48D01A219BAF4600006BDF /* Launch Screen.storyboard */; };
 		3B6A4759216B7C430062908E /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6A4758216B7BE40062908E /* Reachability.m */; };
 		3B6A761E218025FC00C55026 /* LM_alert.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6A761D2180259D00C55026 /* LM_alert.m */; };
-		3B6A761F2180260300C55026 /* NSArray+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6A475E216C85210062908E /* NSArray+Extension.m */; };
-		3B6A76202180260700C55026 /* NSDictionary+Extension.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6A4760216C85210062908E /* NSDictionary+Extension.m */; };
-		3B6A76212180260A00C55026 /* NSDictionary+toString.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6A4762216C85210062908E /* NSDictionary+toString.m */; };
-		3B6A76222180260D00C55026 /* NSString+toDict.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B6A4764216C85210062908E /* NSString+toDict.m */; };
 		3B753A372630D2520050D120 /* dist.zip in Resources */ = {isa = PBXBuildFile; fileRef = 3B753A362630D2520050D120 /* dist.zip */; };
 		3B8E6D2122A60D79003FCA27 /* XHVersion.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B8E6D1C22A60D79003FCA27 /* XHVersion.m */; };
 		3B8E6D2222A60D79003FCA27 /* XHAppInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B8E6D1D22A60D79003FCA27 /* XHAppInfo.m */; };
@@ -75,14 +71,6 @@
 		3B48D098219BEEE400006BDF /* Default-568@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568@2x.png"; sourceTree = "<group>"; };
 		3B6A4757216B7BE40062908E /* Reachability.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		3B6A4758216B7BE40062908E /* Reachability.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
-		3B6A475D216C85210062908E /* NSArray+Extension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSArray+Extension.h"; sourceTree = "<group>"; };
-		3B6A475E216C85210062908E /* NSArray+Extension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSArray+Extension.m"; sourceTree = "<group>"; };
-		3B6A475F216C85210062908E /* NSDictionary+Extension.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+Extension.h"; sourceTree = "<group>"; };
-		3B6A4760216C85210062908E /* NSDictionary+Extension.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+Extension.m"; sourceTree = "<group>"; };
-		3B6A4761216C85210062908E /* NSDictionary+toString.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+toString.h"; sourceTree = "<group>"; };
-		3B6A4762216C85210062908E /* NSDictionary+toString.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+toString.m"; sourceTree = "<group>"; };
-		3B6A4763216C85210062908E /* NSString+toDict.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSString+toDict.h"; sourceTree = "<group>"; };
-		3B6A4764216C85210062908E /* NSString+toDict.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSString+toDict.m"; sourceTree = "<group>"; };
 		3B6A761C2180259D00C55026 /* LM_alert.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LM_alert.h; sourceTree = "<group>"; };
 		3B6A761D2180259D00C55026 /* LM_alert.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LM_alert.m; sourceTree = "<group>"; };
 		3B753A362630D2520050D120 /* dist.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = dist.zip; sourceTree = "<group>"; };
@@ -169,22 +157,6 @@
 			path = Reachability;
 			sourceTree = "<group>";
 		};
-		3B6A475C216C85210062908E /* Category */ = {
-			isa = PBXGroup;
-			children = (
-				3B6A475D216C85210062908E /* NSArray+Extension.h */,
-				3B6A475E216C85210062908E /* NSArray+Extension.m */,
-				3B6A475F216C85210062908E /* NSDictionary+Extension.h */,
-				3B6A4760216C85210062908E /* NSDictionary+Extension.m */,
-				3B6A4761216C85210062908E /* NSDictionary+toString.h */,
-				3B6A4762216C85210062908E /* NSDictionary+toString.m */,
-				3B6A4763216C85210062908E /* NSString+toDict.h */,
-				3B6A4764216C85210062908E /* NSString+toDict.m */,
-			);
-			name = Category;
-			path = "../../../../wms/dev/wms-ios/wms-ios/Category";
-			sourceTree = "<group>";
-		};
 		3B6A761B2180259D00C55026 /* Custum */ = {
 			isa = PBXGroup;
 			children = (
@@ -247,7 +219,6 @@
 				3B48D098219BEEE400006BDF /* Default-568@2x.png */,
 				3B753A362630D2520050D120 /* dist.zip */,
 				3B7FC2E5255E978700EA655B /* audio */,
-				3B6A475C216C85210062908E /* Category */,
 				3B6A761B2180259D00C55026 /* Custum */,
 				3BF2529C215E06FD00DA76B9 /* Third */,
 				3BF25299215E06F200DA76B9 /* Service */,
@@ -517,10 +488,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3B6A76222180260D00C55026 /* NSString+toDict.m in Sources */,
-				3B6A76212180260A00C55026 /* NSDictionary+toString.m in Sources */,
-				3B6A76202180260700C55026 /* NSDictionary+Extension.m in Sources */,
-				3B6A761F2180260300C55026 /* NSArray+Extension.m in Sources */,
 				3B6A761E218025FC00C55026 /* LM_alert.m in Sources */,
 				3B6A4759216B7C430062908E /* Reachability.m in Sources */,
 				3B2087882195296C000C36A9 /* CheckOrderPathViewController.m in Sources */,
